@@ -19,19 +19,16 @@ public class Dish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int dishId;
+
     @Column(unique = true)
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "dish_ingredients",
-            joinColumns = @JoinColumn(name = "dishId"),
-            inverseJoinColumns = @JoinColumn(name = "ingredientId")
-    )
-    private List<Ingredient> ingredients;
+
+    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DishIngredient> dishIngredients;
     @Transient
     public boolean isFastingSuitable(){
-        for(Ingredient i : ingredients){
-            if(!i.isFastingSuitable())
+        for(DishIngredient di : dishIngredients){
+            if(!di.getIngredient().isFastingSuitable())
                 return false;
         }
         return true;

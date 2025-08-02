@@ -11,11 +11,11 @@ import java.util.List;
 @Component
 public class DishManager {
     @Autowired
-    IngredientManager ingredientManager;
+    DishIngredientManager dishIngredientManager;
     public DishDTO toDto(Dish dish){
         DishDTO dto = new DishDTO();
         dto.setName(dish.getName());
-        dto.setIngredientDTOS(ingredientManager.toDtoList(dish.getIngredients()));
+        dto.setDishIngredientDTOS(dishIngredientManager.toDtoList(dish.getDishIngredients()));
         return dto;
     }
     public List<DishDTO> toDtoList(List<Dish> dishes){
