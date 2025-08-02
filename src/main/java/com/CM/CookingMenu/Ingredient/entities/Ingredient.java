@@ -1,4 +1,4 @@
-package com.CM.CookingMenu.Ingridient.entities;
+package com.CM.CookingMenu.Ingredient.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,11 +11,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Ingridient")
-public class Ingridient {
+@Table(name = "Ingredient")
+public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ingridientId;
+    private int ingredientId;
+    @Column(unique = true)
     private String name;
-    private Double quantity;
+    private boolean fastingSuitable;
 }

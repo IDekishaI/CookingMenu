@@ -1,4 +1,4 @@
-package com.CM.CookingMenu.Ingridient.entities;
+package com.CM.CookingMenu.Ingredient.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngridientDTO {
+public class IngredientDTO {
     private String name;
-    private Double quantity;
+    private boolean fastingSuitable;
 }
