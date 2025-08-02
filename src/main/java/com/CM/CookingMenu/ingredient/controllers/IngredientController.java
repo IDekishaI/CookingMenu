@@ -1,7 +1,7 @@
-package com.CM.CookingMenu.Ingredient.controllers;
+package com.CM.CookingMenu.ingredient.controllers;
 
-import com.CM.CookingMenu.Ingredient.entities.IngredientDTO;
-import com.CM.CookingMenu.Ingredient.services.IngredientService;
+import com.CM.CookingMenu.ingredient.entities.IngredientDTO;
+import com.CM.CookingMenu.ingredient.services.IngredientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

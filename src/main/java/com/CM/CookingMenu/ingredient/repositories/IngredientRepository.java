@@ -1,6 +1,6 @@
-package com.CM.CookingMenu.Ingredient.repositories;
+package com.CM.CookingMenu.ingredient.repositories;
 
-import com.CM.CookingMenu.Ingredient.entities.Ingredient;
+import com.CM.CookingMenu.ingredient.entities.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IngredientRepository extends JpaRepository<Ingredient, Integer> {

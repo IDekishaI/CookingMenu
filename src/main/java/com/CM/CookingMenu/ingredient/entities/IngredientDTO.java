@@ -1,4 +1,4 @@
-package com.CM.CookingMenu.Ingredient.entities;
+package com.CM.CookingMenu.ingredient.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

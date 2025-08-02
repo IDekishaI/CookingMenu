@@ -1,9 +1,9 @@
-package com.CM.CookingMenu.Ingredient.services;
+package com.CM.CookingMenu.ingredient.services;
 
-import com.CM.CookingMenu.Ingredient.managers.IngredientManager;
-import com.CM.CookingMenu.Ingredient.repositories.IngredientRepository;
-import com.CM.CookingMenu.Ingredient.entities.Ingredient;
-import com.CM.CookingMenu.Ingredient.entities.IngredientDTO;
+import com.CM.CookingMenu.ingredient.managers.IngredientManager;
+import com.CM.CookingMenu.ingredient.repositories.IngredientRepository;
+import com.CM.CookingMenu.ingredient.entities.Ingredient;
+import com.CM.CookingMenu.ingredient.entities.IngredientDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
