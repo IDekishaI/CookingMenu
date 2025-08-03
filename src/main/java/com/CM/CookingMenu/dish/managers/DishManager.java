@@ -27,7 +27,7 @@ public class DishManager {
     }
     public Dish toEntity(DishDTO dto){
         Dish dish = new Dish();
-        dish.setName(dto.getName());
+        dish.setName(dto.getName().trim());
         List<DishIngredient> dishIngredients = dishIngredientManager.toEntityList(dto.getDishIngredientDTOS(), dish);
         dish.setDishIngredients(dishIngredients);
         return dish;

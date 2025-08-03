@@ -18,5 +18,5 @@ public class IngredientDTO {
     private String name;
 
     @NotNull(message = "fastingSuitable field is required.")
-    private boolean fastingSuitable;
+    private Boolean fastingSuitable;
 }

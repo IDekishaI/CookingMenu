@@ -10,8 +10,8 @@ import java.util.List;
 public class IngredientManager {
     public Ingredient toEntity(IngredientDTO dto){
         Ingredient ingredient = new Ingredient();
-        ingredient.setName(dto.getName());
-        ingredient.setFastingSuitable(dto.isFastingSuitable());
+        ingredient.setName(dto.getName().trim());
+        ingredient.setFastingSuitable(dto.getFastingSuitable());
         return ingredient;
     }
     public IngredientDTO toDto(Ingredient ingredient){
