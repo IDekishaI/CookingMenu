@@ -1,6 +1,7 @@
 package com.CM.CookingMenu.dish.entities;
 
 import com.CM.CookingMenu.ingredient.entities.Ingredient;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class Dish {
     private String name;
 
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<DishIngredient> dishIngredients;
     @Transient
     public boolean isFastingSuitable(){

@@ -21,7 +21,6 @@ public class DishIngredientManager {
     public DishIngredientDTO toDto(DishIngredient dishIngredient){
         DishIngredientDTO dto = new DishIngredientDTO();
         dto.setIngredientName(dishIngredient.getIngredient().getName());
-        dto.setFastingSuitable(dishIngredient.getIngredient().isFastingSuitable());
         dto.setQuantity(dishIngredient.getQuantity());
         return dto;
     }

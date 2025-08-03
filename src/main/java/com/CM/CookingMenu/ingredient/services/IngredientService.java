@@ -7,18 +7,21 @@ import com.CM.CookingMenu.ingredient.entities.IngredientDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class IngredientService {
     private final IngredientRepository ingredientRepo;
     private final IngredientManager ingredientManager;
     public List<IngredientDTO> getAllIngredients(){
         return ingredientManager.toDtoList(ingredientRepo.findAll());
     }
+    @Transactional
     public void addIngredient(IngredientDTO dto){
         if(ingredientRepo.findByName(dto.getName()).isPresent()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ingredient name already exists.");

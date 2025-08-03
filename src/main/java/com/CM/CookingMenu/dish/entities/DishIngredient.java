@@ -1,6 +1,7 @@
 package com.CM.CookingMenu.dish.entities;
 
 import com.CM.CookingMenu.ingredient.entities.Ingredient;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class DishIngredient {
 
     @ManyToOne
     @JoinColumn(name = "dishId")
+    @JsonBackReference
     private Dish dish;
 
     @ManyToOne
