@@ -4,6 +4,7 @@ import com.CM.CookingMenu.ingredient.entities.IngredientDTO;
 import com.CM.CookingMenu.ingredient.services.IngredientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,6 @@ public class IngredientController {
     @PostMapping
     public ResponseEntity<String> addIngredient(@Valid @RequestBody IngredientDTO ingredientDTO){
         ingredientService.addIngredient(ingredientDTO);
-        return ResponseEntity.ok("Ingredient Added.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Ingredient Added.");
     }
 }

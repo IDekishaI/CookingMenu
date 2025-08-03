@@ -24,7 +24,7 @@ public class Dish {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<DishIngredient> dishIngredients;
     @Transient
