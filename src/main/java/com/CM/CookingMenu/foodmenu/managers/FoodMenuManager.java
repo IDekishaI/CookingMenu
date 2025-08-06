@@ -6,7 +6,9 @@ import com.CM.CookingMenu.foodmenu.entities.FoodMenuDish;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -14,6 +16,9 @@ public class FoodMenuManager {
     private final FoodMenuDishManager foodMenuDishManager;
 
     public FoodMenuDTO toDto(FoodMenu foodMenu){
+        if(foodMenu == null)
+            throw new IllegalArgumentException("FoodMenu cannot be null.");
+
         FoodMenuDTO dto = new FoodMenuDTO();
         dto.setDate(foodMenu.getFoodmenuDate());
         dto.setFoodMenuDishDTOS(foodMenuDishManager.toDtoList(foodMenu.getDishes()));
@@ -27,7 +32,11 @@ public class FoodMenuManager {
         return foodMenu;
     }
     public List<FoodMenuDTO> toDtoList(List<FoodMenu> foodMenus){
+        if(foodMenus == null)
+            return new ArrayList<>();
+
         return foodMenus.stream()
+                    .filter(Objects::nonNull)
                     .map(this::toDto)
                     .toList();
     }

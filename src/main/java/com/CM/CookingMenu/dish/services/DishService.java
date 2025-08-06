@@ -23,7 +23,7 @@ public class DishService {
     }
     @Transactional
     public void saveDish(DishDTO dto){
-        if(dishRepo.existsByName(dto.getName()))
+        if(dishRepo.existsByName(dto.getName().trim()))
         {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dish name already exists.");
         }

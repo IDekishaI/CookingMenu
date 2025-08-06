@@ -13,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DishIngredientDTO {
+    @NotNull(message = "Ingredient name cannot be null.")
     @NotBlank(message = "Ingredient name cannot be blank.")
     private String ingredientName;
     @NotNull(message = "Quantity is required.")

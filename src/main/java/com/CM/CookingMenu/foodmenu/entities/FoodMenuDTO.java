@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -17,8 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FoodMenuDTO {
-    @NotNull
+    @NotNull(message = "Date cannot be null.")
     private LocalDate date;
+    @NotNull(message = "Food menu dishes cannot be null.")
     @NotEmpty
     @Valid
     List<FoodMenuDishDTO> foodMenuDishDTOS;

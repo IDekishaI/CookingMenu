@@ -23,7 +23,7 @@ public class IngredientService {
     }
     @Transactional
     public void addIngredient(IngredientDTO dto){
-        if(ingredientRepo.findByName(dto.getName()).isPresent()){
+        if(ingredientRepo.findByName(dto.getName().trim()).isPresent()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ingredient name already exists.");
         }
         Ingredient ingredient = ingredientManager.toEntity(dto);

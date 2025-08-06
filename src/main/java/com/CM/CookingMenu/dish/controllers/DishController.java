@@ -1,7 +1,6 @@
 package com.CM.CookingMenu.dish.controllers;
 
 import com.CM.CookingMenu.dish.entities.DishDTO;
-import com.CM.CookingMenu.dish.managers.DishManager;
 import com.CM.CookingMenu.dish.services.DishService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

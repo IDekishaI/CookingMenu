@@ -23,7 +23,7 @@ public class FoodMenuService {
     }
     @Transactional
     public void saveFoodmenu(FoodMenuDTO foodMenuDTO){
-        if(foodMenuRepo.existsByfoodmenuDate(foodMenuDTO.getDate())){
+        if(foodMenuRepo.existsByFoodmenuDate(foodMenuDTO.getDate())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Foodmenu Date already exists.");
         }
         FoodMenu foodmenu = foodMenuManager.toEntity(foodMenuDTO);

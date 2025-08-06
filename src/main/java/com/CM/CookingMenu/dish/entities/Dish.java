@@ -1,6 +1,5 @@
 package com.CM.CookingMenu.dish.entities;
 
-import com.CM.CookingMenu.ingredient.entities.Ingredient;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
