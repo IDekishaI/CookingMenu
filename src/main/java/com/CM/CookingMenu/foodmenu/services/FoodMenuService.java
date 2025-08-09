@@ -1,5 +1,6 @@
 package com.CM.CookingMenu.foodmenu.services;
 
+import com.CM.CookingMenu.dish.repositories.DishRepository;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.managers.FoodMenuManager;
@@ -19,7 +20,10 @@ public class FoodMenuService {
     private final FoodMenuRepository foodMenuRepo;
     private final FoodMenuManager foodMenuManager;
     public List<FoodMenuDTO> getAllFoodMenus(){
-       return foodMenuManager.toDtoList(foodMenuRepo.findAll());
+       return foodMenuManager.toDtoList(foodMenuRepo.findAllWithDishes());
+    }
+    public List<FoodMenuDTO> getAllFoodMenusContainingDish(String dishName){
+        return foodMenuManager.toDtoList(foodMenuRepo.findByDishName(dishName));
     }
     @Transactional
     public void saveFoodmenu(FoodMenuDTO foodMenuDTO){

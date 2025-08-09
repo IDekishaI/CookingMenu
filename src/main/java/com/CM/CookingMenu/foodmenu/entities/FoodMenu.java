@@ -26,4 +26,12 @@ public class FoodMenu {
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<FoodMenuDish> dishes;
+
+    @Transient
+    public boolean isFastingSuitable(){
+        if(dishes == null || dishes.isEmpty())
+            return true;
+        return dishes.stream()
+                .allMatch(foodMenuDish -> foodMenuDish.getDish() != null && foodMenuDish.getDish().isFastingSuitable());
+    }
 }

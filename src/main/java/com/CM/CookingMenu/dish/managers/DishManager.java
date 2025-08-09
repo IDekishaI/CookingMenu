@@ -21,6 +21,7 @@ public class DishManager {
         DishDTO dto = new DishDTO();
         dto.setName(dish.getName());
         dto.setDishIngredientDTOS(dishIngredientManager.toDtoList(dish.getDishIngredients()));
+        dto.setFastingSuitable(dish.isFastingSuitable());
         return dto;
     }
     public List<DishDTO> toDtoList(List<Dish> dishes){

@@ -22,6 +22,7 @@ public class FoodMenuManager {
         FoodMenuDTO dto = new FoodMenuDTO();
         dto.setDate(foodMenu.getFoodmenuDate());
         dto.setFoodMenuDishDTOS(foodMenuDishManager.toDtoList(foodMenu.getDishes()));
+        dto.setFastingSuitable(foodMenu.isFastingSuitable());
         return dto;
     }
     public FoodMenu toEntity(FoodMenuDTO dto){

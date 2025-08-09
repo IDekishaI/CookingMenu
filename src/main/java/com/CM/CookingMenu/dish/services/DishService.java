@@ -19,7 +19,7 @@ public class DishService {
     private final DishManager dishManager;
     private final DishRepository dishRepo;
     public List<DishDTO> getAllDishes(){
-        return dishManager.toDtoList(dishRepo.findAll());
+        return dishManager.toDtoList(dishRepo.findAllWithIngredients());
     }
     @Transactional
     public void saveDish(DishDTO dto){

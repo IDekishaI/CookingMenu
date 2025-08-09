@@ -1,5 +1,6 @@
 package com.CM.CookingMenu.dish.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -25,4 +26,7 @@ public class DishDTO {
     @NotEmpty(message = "Must have at least 1 ingredient.")
     @Valid
     List<DishIngredientDTO> dishIngredientDTOS;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private boolean fastingSuitable;
 }

@@ -21,6 +21,12 @@ public class FoodMenuController {
     public ResponseEntity<List<FoodMenuDTO>> getAllFoodMenus(){
         return ResponseEntity.ok(foodMenuService.getAllFoodMenus());
     }
+    @GetMapping("/{dishName}")
+    public ResponseEntity<List<FoodMenuDTO>> getAllFoodMenusContainingDish(@PathVariable String dishName){
+        if(dishName == null || dishName.trim().isBlank())
+            throw new IllegalArgumentException("Dish name cannot be null or empty");
+        return ResponseEntity.ok(foodMenuService.getAllFoodMenusContainingDish(dishName.trim()));
+    }
     @PostMapping
     public ResponseEntity<String> saveFoodmenu(@Valid @RequestBody FoodMenuDTO dto){
         foodMenuService.saveFoodmenu(dto);
