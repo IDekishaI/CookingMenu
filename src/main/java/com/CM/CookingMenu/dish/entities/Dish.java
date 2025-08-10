@@ -28,6 +28,9 @@ public class Dish {
     private List<DishIngredient> dishIngredients;
     @Transient
     public boolean isFastingSuitable(){
+        if(dishIngredients == null || dishIngredients.isEmpty())
+            return true;
+
         for(DishIngredient di : dishIngredients){
             if(!di.getIngredient().isFastingSuitable())
                 return false;
