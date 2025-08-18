@@ -4,7 +4,7 @@ import com.CM.CookingMenu.dish.entities.Dish;
 import com.CM.CookingMenu.dish.repositories.DishRepository;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenuDish;
-import com.CM.CookingMenu.foodmenu.entities.FoodMenuDishDTO;
+import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDishDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

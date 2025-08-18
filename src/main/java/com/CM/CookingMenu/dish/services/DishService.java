@@ -1,7 +1,7 @@
 package com.CM.CookingMenu.dish.services;
 
 import com.CM.CookingMenu.dish.entities.Dish;
-import com.CM.CookingMenu.dish.entities.DishDTO;
+import com.CM.CookingMenu.dish.dtos.DishDTO;
 import com.CM.CookingMenu.dish.managers.DishManager;
 import com.CM.CookingMenu.dish.repositories.DishRepository;
 import lombok.RequiredArgsConstructor;

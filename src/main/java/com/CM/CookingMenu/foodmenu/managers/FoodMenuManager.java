@@ -1,7 +1,7 @@
 package com.CM.CookingMenu.foodmenu.managers;
 
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
-import com.CM.CookingMenu.foodmenu.entities.FoodMenuDTO;
+import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenuDish;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

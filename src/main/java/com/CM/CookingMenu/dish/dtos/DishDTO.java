@@ -1,4 +1,4 @@
-package com.CM.CookingMenu.dish.entities;
+package com.CM.CookingMenu.dish.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;

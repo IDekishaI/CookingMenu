@@ -1,4 +1,4 @@
-package com.CM.CookingMenu.foodmenu.entities;
+package com.CM.CookingMenu.foodmenu.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

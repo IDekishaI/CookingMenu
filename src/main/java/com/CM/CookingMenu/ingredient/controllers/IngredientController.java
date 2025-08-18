@@ -1,6 +1,6 @@
 package com.CM.CookingMenu.ingredient.controllers;
 
-import com.CM.CookingMenu.ingredient.entities.IngredientDTO;
+import com.CM.CookingMenu.ingredient.dtos.IngredientDTO;
 import com.CM.CookingMenu.ingredient.services.IngredientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

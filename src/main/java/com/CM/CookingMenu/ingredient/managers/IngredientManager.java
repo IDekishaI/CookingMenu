@@ -1,7 +1,7 @@
 package com.CM.CookingMenu.ingredient.managers;
 
 import com.CM.CookingMenu.ingredient.entities.Ingredient;
-import com.CM.CookingMenu.ingredient.entities.IngredientDTO;
+import com.CM.CookingMenu.ingredient.dtos.IngredientDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

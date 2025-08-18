@@ -1,7 +1,7 @@
 package com.CM.CookingMenu.foodmenu.services;
 
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
-import com.CM.CookingMenu.foodmenu.entities.FoodMenuDTO;
+import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.managers.FoodMenuManager;
 import com.CM.CookingMenu.foodmenu.repositories.FoodMenuRepository;
 import lombok.RequiredArgsConstructor;

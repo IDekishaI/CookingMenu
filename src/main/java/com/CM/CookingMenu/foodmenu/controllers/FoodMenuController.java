@@ -1,6 +1,6 @@
 package com.CM.CookingMenu.foodmenu.controllers;
 
-import com.CM.CookingMenu.foodmenu.entities.FoodMenuDTO;
+import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.services.FoodMenuService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
