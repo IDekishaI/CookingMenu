@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class IngredientController {
         return ResponseEntity.ok(ingredientService.getAllIngredients());
     }
     @PostMapping
+    @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> addIngredient(@Valid @RequestBody IngredientDTO ingredientDTO){
         ingredientService.addIngredient(ingredientDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Ingredient Added.");

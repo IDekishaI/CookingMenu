@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class FoodMenuController {
         return ResponseEntity.ok(foodMenuService.getAllFoodMenus());
     }
     @GetMapping("/{dishName}")
+    @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<List<FoodMenuDTO>> getAllFoodMenusContainingDish(@PathVariable
                                                                            @Pattern(regexp = "^[a-zA-Z\\s]{2,100}$", message = "Invalid dish name format")
                                                                            @NotBlank(message = "Dish name cannot be blank.")
@@ -33,6 +35,7 @@ public class FoodMenuController {
         return ResponseEntity.ok(foodMenuService.getAllFoodMenusContainingDish(dishName.trim()));
     }
     @PostMapping
+    @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> saveFoodmenu(@Valid @RequestBody FoodMenuDTO dto){
         foodMenuService.saveFoodmenu(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Foodmenu added.");
