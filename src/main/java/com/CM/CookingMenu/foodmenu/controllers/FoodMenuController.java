@@ -20,7 +20,14 @@ import java.util.List;
 @Validated
 public class FoodMenuController {
     private final FoodMenuService foodMenuService;
+
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER', 'COOK', 'ADMIN')")
+    public ResponseEntity<List<FoodMenuDTO>> getAllFutureMenus(){
+        return ResponseEntity.ok(foodMenuService.getAllFutureMenus());
+    }
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<List<FoodMenuDTO>> getAllFoodMenus(){
         return ResponseEntity.ok(foodMenuService.getAllFoodMenus());
     }

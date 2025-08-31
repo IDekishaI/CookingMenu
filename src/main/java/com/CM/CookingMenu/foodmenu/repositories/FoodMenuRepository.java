@@ -10,6 +10,10 @@ import java.util.List;
 
 public interface FoodMenuRepository extends JpaRepository<FoodMenu, Integer> {
     boolean existsByFoodmenuDate(LocalDate date);
+
+    @Query("Select DISTINCT fm FROM FoodMenu fm " +
+            "WHERE fm.foodmenuDate > CURRENT_DATE")
+    List<FoodMenu> findAllFutureMenus();
     @Query("Select DISTINCT fm FROM FoodMenu fm "+
             "LEFT JOIN FETCH fm.dishes fmd " +
             "LEFT JOIN FETCH fmd.dish d")

@@ -24,6 +24,9 @@ public class FoodMenuService {
     public List<FoodMenuDTO> getAllFoodMenusContainingDish(String dishName){
         return foodMenuManager.toDtoList(foodMenuRepo.findByDishName(dishName));
     }
+    public List<FoodMenuDTO> getAllFutureMenus(){
+        return foodMenuManager.toDtoList(foodMenuRepo.findAllFutureMenus());
+    }
     @Transactional
     public void saveFoodmenu(FoodMenuDTO foodMenuDTO){
         if(foodMenuRepo.existsByFoodmenuDate(foodMenuDTO.getDate())){
