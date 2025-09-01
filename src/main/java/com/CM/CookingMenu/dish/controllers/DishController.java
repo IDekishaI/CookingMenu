@@ -19,6 +19,7 @@ import java.util.List;
 public class DishController {
     private final DishService dishService;
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER', 'COOK', 'ADMIN')")
     public ResponseEntity<List<DishDTO>> getAllDishes(){
         return ResponseEntity.ok(dishService.getAllDishes());
     }

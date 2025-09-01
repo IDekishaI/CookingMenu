@@ -1,6 +1,7 @@
 package com.CM.CookingMenu.foodmenu.controllers;
 
 import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
+import com.CM.CookingMenu.foodmenu.dtos.AttendanceRequestDTO;
 import com.CM.CookingMenu.foodmenu.services.FoodMenuService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -46,5 +47,12 @@ public class FoodMenuController {
     public ResponseEntity<String> saveFoodmenu(@Valid @RequestBody FoodMenuDTO dto){
         foodMenuService.saveFoodmenu(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Foodmenu added.");
+    }
+
+    @PostMapping("/attend")
+    @PreAuthorize("hasAnyRole('USER', 'COOK', 'ADMIN')")
+    public ResponseEntity<String> attendMenu(@Valid @RequestBody AttendanceRequestDTO dto){
+        String message = foodMenuService.updateAttendance(dto);
+        return ResponseEntity.ok(message);
     }
 }

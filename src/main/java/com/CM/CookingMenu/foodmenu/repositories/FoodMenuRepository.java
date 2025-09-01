@@ -7,10 +7,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface FoodMenuRepository extends JpaRepository<FoodMenu, Integer> {
     boolean existsByFoodmenuDate(LocalDate date);
 
+    Optional<FoodMenu> findByFoodmenuDate(LocalDate date);
     @Query("Select DISTINCT fm FROM FoodMenu fm " +
             "WHERE fm.foodmenuDate > CURRENT_DATE")
     List<FoodMenu> findAllFutureMenus();

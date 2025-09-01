@@ -1,11 +1,17 @@
 package com.CM.CookingMenu.foodmenu.services;
 
+import com.CM.CookingMenu.auth.entities.User;
+import com.CM.CookingMenu.foodmenu.dtos.AttendanceRequestDTO;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
 import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
+import com.CM.CookingMenu.foodmenu.entities.FoodMenuAttendance;
 import com.CM.CookingMenu.foodmenu.managers.FoodMenuManager;
+import com.CM.CookingMenu.foodmenu.repositories.FoodMenuAttendanceRepository;
 import com.CM.CookingMenu.foodmenu.repositories.FoodMenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,14 +24,15 @@ import java.util.List;
 public class FoodMenuService {
     private final FoodMenuRepository foodMenuRepo;
     private final FoodMenuManager foodMenuManager;
+    private final FoodMenuAttendanceRepository attendanceRepo;
     public List<FoodMenuDTO> getAllFoodMenus(){
-       return foodMenuManager.toDtoList(foodMenuRepo.findAllWithDishes());
+       return foodMenuManager.toDtoListWithAttendance(foodMenuRepo.findAllWithDishes(), getCurrentUser(), isCookOrAdmin());
     }
     public List<FoodMenuDTO> getAllFoodMenusContainingDish(String dishName){
-        return foodMenuManager.toDtoList(foodMenuRepo.findByDishName(dishName));
+        return foodMenuManager.toDtoListWithAttendance(foodMenuRepo.findByDishName(dishName), getCurrentUser(), isCookOrAdmin());
     }
     public List<FoodMenuDTO> getAllFutureMenus(){
-        return foodMenuManager.toDtoList(foodMenuRepo.findAllFutureMenus());
+        return foodMenuManager.toDtoListWithAttendance(foodMenuRepo.findAllFutureMenus(), getCurrentUser(), isCookOrAdmin());
     }
     @Transactional
     public void saveFoodmenu(FoodMenuDTO foodMenuDTO){
@@ -34,5 +41,42 @@ public class FoodMenuService {
         }
         FoodMenu foodmenu = foodMenuManager.toEntity(foodMenuDTO);
         foodMenuRepo.save(foodmenu);
+    }
+
+    private User getCurrentUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return (User) auth.getPrincipal();
+    }
+    private Boolean isCookOrAdmin(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_COOK") ||
+                                                                    authority.getAuthority().equals("ROLE_ADMIN")
+                                                        );
+    }
+
+    @Transactional
+    public String updateAttendance(AttendanceRequestDTO dto){
+        User currentUser = getCurrentUser();
+        FoodMenu menu = foodMenuRepo.findByFoodmenuDate(dto.getMenuDate()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Menu not found for specific date"));
+        boolean isCurrentlyAttending = attendanceRepo.existsByFoodmenuIdAndUserId(menu.getFoodMenuId(), currentUser.getUserId());
+        if(dto.getAttending()){
+            if(isCurrentlyAttending)
+                return "You are already registered for this menu.";
+            else{
+                FoodMenuAttendance foodMenuAttendance = new FoodMenuAttendance();
+                foodMenuAttendance.setFoodmenuId(menu.getFoodMenuId());
+                foodMenuAttendance.setUserId(currentUser.getUserId());
+                attendanceRepo.save(foodMenuAttendance);
+                return "Successfully registered for this menu.";
+            }
+        }
+        else{
+            if(isCurrentlyAttending){
+                attendanceRepo.deleteByFoodmenuIdAndUserId(menu.getFoodMenuId(), currentUser.getUserId());
+                return "Successfully cancelled your attendance.";
+            }
+            else
+                return "You were not registered for this menu.";
+        }
     }
 }

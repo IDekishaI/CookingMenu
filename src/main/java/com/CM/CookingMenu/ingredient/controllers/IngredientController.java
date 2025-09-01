@@ -18,6 +18,7 @@ import java.util.List;
 public class IngredientController {
     private final IngredientService ingredientService;
     @GetMapping
+    @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<List<IngredientDTO>> getAllIngredients(){
         return ResponseEntity.ok(ingredientService.getAllIngredients());
     }
