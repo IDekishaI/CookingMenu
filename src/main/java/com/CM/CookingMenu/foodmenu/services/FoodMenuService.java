@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -59,6 +62,16 @@ public class FoodMenuService {
         User currentUser = getCurrentUser();
         FoodMenu menu = foodMenuRepo.findByFoodmenuDate(dto.getMenuDate()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Menu not found for specific date"));
         boolean isCurrentlyAttending = attendanceRepo.existsByFoodmenuIdAndUserId(menu.getFoodMenuId(), currentUser.getUserId());
+        LocalDateTime timeNow = LocalDateTime.now();
+        LocalDateTime menuDate = LocalDateTime.of(dto.getMenuDate(), LocalTime.MIN);
+        LocalDateTime minApplyDate;
+        if(menuDate.getDayOfWeek().equals(DayOfWeek.MONDAY))
+            minApplyDate = menuDate.minusHours(51);
+        else
+            minApplyDate = menuDate.minusHours(3);
+        if(timeNow.isAfter(minApplyDate)){
+            return "You had to apply before 21:00 last weekday before the menu.";
+        }
         if(dto.getAttending()){
             if(isCurrentlyAttending)
                 return "You are already registered for this menu.";
