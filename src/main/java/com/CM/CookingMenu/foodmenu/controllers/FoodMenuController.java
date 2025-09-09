@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -47,6 +50,30 @@ public class FoodMenuController {
     public ResponseEntity<String> saveFoodmenu(@Valid @RequestBody FoodMenuDTO dto){
         foodMenuService.saveFoodmenu(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Foodmenu added.");
+    }
+    @DeleteMapping("/delete/{menuDate}")
+    @PreAuthorize(("hasAnyRole('COOK', 'ADMIN')"))
+    public ResponseEntity<String> deleteMenu(@PathVariable
+                                                 @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid date format. Use YYYY-MM-DD")
+                                                 @NotBlank(message = "Date cannot be blank.")String menuDate){
+        LocalDate date;
+        try{
+            date = LocalDate.parse(menuDate);
+        }
+        catch (DateTimeParseException ex){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format: " + menuDate);
+        }
+
+        foodMenuService.deleteFoodmenuByDate(date);
+
+        return ResponseEntity.ok("Foodmenu deleted successfully.");
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
+    public ResponseEntity<String> updateFoodmenu(@RequestBody @Valid FoodMenuDTO foodmenuDTO){
+        foodMenuService.updateFoodmenu(foodmenuDTO);
+        return ResponseEntity.ok("Successfully updated the foodmenu.");
     }
 
     @PostMapping("/attend")

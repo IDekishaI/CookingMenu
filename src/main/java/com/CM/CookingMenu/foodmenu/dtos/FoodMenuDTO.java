@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -19,7 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 public class FoodMenuDTO {
     @NotNull(message = "Date cannot be null.")
-    private LocalDate date;
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid date format. Use YYYY-MM-DD")
+    private String date;
 
     @NotNull(message = "Food menu dishes cannot be null.")
     @NotEmpty

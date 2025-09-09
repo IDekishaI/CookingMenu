@@ -6,8 +6,12 @@ import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenuDish;
 import com.CM.CookingMenu.foodmenu.repositories.FoodMenuAttendanceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +27,7 @@ public class FoodMenuManager {
             throw new IllegalArgumentException("FoodMenu cannot be null.");
 
         FoodMenuDTO dto = new FoodMenuDTO();
-        dto.setDate(foodMenu.getFoodmenuDate());
+        dto.setDate(foodMenu.getFoodmenuDate().toString());
         dto.setFoodMenuDishDTOS(foodMenuDishManager.toDtoList(foodMenu.getDishes()));
         dto.setFastingSuitable(foodMenu.isFastingSuitable());
 
@@ -39,10 +43,19 @@ public class FoodMenuManager {
 
         return dto;
     }
+    public LocalDate stringToLocalDate(String date){
+        try{
+            return LocalDate.parse(date);
+        }
+        catch (DateTimeParseException ex){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format. Use YYYY-MM-DD");
+        }
+    }
     public FoodMenu toEntity(FoodMenuDTO dto){
         FoodMenu foodMenu = new FoodMenu();
         List<FoodMenuDish> foodMenuDishes = foodMenuDishManager.toEntityList(dto.getFoodMenuDishDTOS(), foodMenu);
-        foodMenu.setFoodmenuDate(dto.getDate());
+        LocalDate toDate = stringToLocalDate(dto.getDate());
+        foodMenu.setFoodmenuDate(toDate);
         foodMenu.setDishes(foodMenuDishes);
         return foodMenu;
     }
