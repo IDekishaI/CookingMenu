@@ -1,5 +1,8 @@
 package com.CM.CookingMenu.foodmenu.controllers;
 
+import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionRequestDTO;
+import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionResponseDTO;
+import com.CM.CookingMenu.foodmenu.ai.services.FoodMenuSuggestionService;
 import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.dtos.AttendanceRequestDTO;
 import com.CM.CookingMenu.foodmenu.services.FoodMenuService;
@@ -24,6 +27,7 @@ import java.util.List;
 @Validated
 public class FoodMenuController {
     private final FoodMenuService foodMenuService;
+    private final FoodMenuSuggestionService foodMenuSuggestionService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'COOK', 'ADMIN')")
@@ -52,7 +56,7 @@ public class FoodMenuController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Foodmenu added.");
     }
     @DeleteMapping("/delete/{menuDate}")
-    @PreAuthorize(("hasAnyRole('COOK', 'ADMIN')"))
+    @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> deleteMenu(@PathVariable
                                                  @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid date format. Use YYYY-MM-DD")
                                                  @NotBlank(message = "Date cannot be blank.")String menuDate){
@@ -81,5 +85,12 @@ public class FoodMenuController {
     public ResponseEntity<String> attendMenu(@Valid @RequestBody AttendanceRequestDTO dto){
         String message = foodMenuService.updateAttendance(dto);
         return ResponseEntity.ok(message);
+    }
+
+    @PostMapping("/generate")
+    @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
+    public ResponseEntity<FoodMenuSuggestionResponseDTO> getFoodMenuSuggestions(@Valid @RequestBody FoodMenuSuggestionRequestDTO dto){
+        FoodMenuSuggestionResponseDTO suggestions = foodMenuSuggestionService.generateFoodMenuSuggestion(dto);
+        return ResponseEntity.ok(suggestions);
     }
 }

@@ -126,7 +126,7 @@ public class AIRecipeService {
 
         try {
             String response = webClient.post()
-                    .uri("/v1beta/models/gemini-1.5-flash:generateContent?key=" + geminiApiKey)
+                    .uri("/v1beta/models/gemini-2.5-flash:generateContent?key=" + geminiApiKey)
                     .bodyValue(Map.of(
                             "contents", List.of(
                                     Map.of("parts", List.of(
