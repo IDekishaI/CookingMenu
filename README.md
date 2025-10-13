@@ -26,6 +26,20 @@ This project demonstrates practical **Spring Boot development skills**, includin
   * Automatic detection of fasting-suitable meals based on ingredients
 
 
+* **AI-Powered Menu Planning**
+    * Generate intelligent 5-day weekly menu plans using Google Gemini AI
+    * Nutritional analysis and cost estimates per person
+    * Customizable based on dietary preferences, budget, and ingredients
+    * Fasting-friendly meal suggestions
+
+
+* **AI Recipe Suggestions**
+    * Get creative recipe ideas based on available ingredients
+    * Meal type and target group customization
+    * Automatic fasting compatibility detection
+    * Multiple recipe options per request
+
+
 * **Role-Based Access Control**
   * User – View menus, register/cancel attendance
   * Cook – Manage dishes, ingredients, and menus
@@ -56,6 +70,8 @@ This project demonstrates practical **Spring Boot development skills**, includin
 * **Maven** - Dependency management
 * **Lombok** - Boilerplate code reduction
 * **Jakarta Validation** - Input validation
+* **WebClient** - Reactive HTTP client for external API calls
+* **Jackson** - JSON processing and parsing
 * **JUnit 5** - Unit testing
 * **Mockito** - Mocking framework
 
@@ -104,7 +120,11 @@ PUT    /menus/update             # Update menu (Cook/Admin)
 DELETE /menus/delete/{date}      # Delete menu (Cook/Admin)
 POST   /menus/attend             # Register/cancel attendance (All users)
 ```
-
+* AI Features (Cooks/Admins only)
+```text
+POST /dishes/suggestions        # Generate AI recipe suggestions
+POST /menus/generate            # Generate AI weekly menu plans
+```
 ### Installation & Setup
 
 #### Prerequisites
@@ -124,6 +144,7 @@ POST   /menus/attend             # Register/cancel attendance (All users)
     export DB_USER=your_db_username
     export DB_PASS=your_db_password
     export JWT_SECRET=your_jwt_secret_key
+    export GEMINI_API_KEY=your_gemini_api_key
    ```
 3. Database setup 
    * Create a SQL Server database named CookingMenu 
@@ -187,5 +208,8 @@ This application demonstrates proficiency in:
 * **Clean Architecture** with separation of concerns
 * **Test-Driven Development** with comprehensive unit tests
 * **Production-Ready Code** with proper error handling and validation
+* **AI Integration** using Google Gemini API with reactive WebClient
+* **Complex JSON Parsing** with robust error handling
+* **External API Communication** with proper exception management
 
 The codebase follows Spring Boot best practices and demonstrates understanding of enterprise-level application development suitable for production environments.
