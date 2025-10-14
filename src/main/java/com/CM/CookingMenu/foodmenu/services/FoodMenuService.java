@@ -84,10 +84,10 @@ public class FoodMenuService {
     @Transactional
     public String updateAttendance(AttendanceRequestDTO dto){
         User currentUser = getCurrentUser();
-        FoodMenu menu = foodMenuRepo.findByFoodmenuDate(dto.getMenuDate()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Menu not found for specific date"));
+        FoodMenu menu = foodMenuRepo.findByFoodmenuDate(dto.menuDate()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Menu not found for specific date"));
         boolean isCurrentlyAttending = attendanceRepo.existsByFoodmenuIdAndUserId(menu.getFoodMenuId(), currentUser.getUserId());
         LocalDateTime timeNow = LocalDateTime.now();
-        LocalDateTime menuDate = LocalDateTime.of(dto.getMenuDate(), LocalTime.MIN);
+        LocalDateTime menuDate = LocalDateTime.of(dto.menuDate(), LocalTime.MIN);
         LocalDateTime minApplyDate;
         if(menuDate.getDayOfWeek().equals(DayOfWeek.MONDAY))
             minApplyDate = menuDate.minusHours(51);
@@ -96,7 +96,7 @@ public class FoodMenuService {
         if(timeNow.isAfter(minApplyDate)){
             return "You had to apply before 21:00 last weekday before the menu.";
         }
-        if(dto.getAttending()){
+        if(dto.attending()){
             if(isCurrentlyAttending)
                 return "You are already registered for this menu.";
             else{

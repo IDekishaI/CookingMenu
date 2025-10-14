@@ -27,12 +27,12 @@ public class AIRecipeService {
     private String buildPrompt(RecipeSuggestionRequestDTO request){
         StringBuilder prompt = new StringBuilder();
         prompt.append("Generate 3 recipe suggestions using these ingredients: ");
-        prompt.append(String.join(", ", request.getAvailableIngredients()));
-        if(request.getMealType() != null)
-            prompt.append(". Meal type: ").append(request.getMealType());
-        if(request.getTargetGroup() != null)
-            prompt.append(". Target group: ").append(request.getTargetGroup());
-        if(request.getFastingFriendly() != null && request.getFastingFriendly())
+        prompt.append(String.join(", ", request.availableIngredients()));
+        if(request.mealType() != null)
+            prompt.append(". Meal type: ").append(request.mealType());
+        if(request.targetGroup() != null)
+            prompt.append(". Target group: ").append(request.targetGroup());
+        if(request.fastingFriendly() != null && request.fastingFriendly())
             prompt.append(". Must be fasting-friendly (no meat, dairy or eggs");
 
         prompt.append("\n\nRespond with JSON in this exact format: \n");
@@ -87,10 +87,7 @@ public class AIRecipeService {
             List<RecipeSuggestionResponseDTO> result = new ArrayList<>();
 
             for(JsonNode suggestion : suggestions){
-                RecipeSuggestionResponseDTO dto = new RecipeSuggestionResponseDTO();
-                dto.setDishName(suggestion.path("dishName").asText("Unknown Dish"));
-                dto.setCookingInstructions(suggestion.path("cookingInstructions").asText("No instructions provided"));
-                dto.setIsFastingFriendly(suggestion.path("isFastingFriendly").asBoolean(false));
+                String dishName = suggestion.path("dishName").asText("Unknown Dish");
 
                 List<String> ingredients = new ArrayList<>();
                 JsonNode ingredientsNode = suggestion.path("requiredIngredients");
@@ -102,7 +99,11 @@ public class AIRecipeService {
                             ingredients.add(ingredientName);
                     }
                 }
-                dto.setRequiredIngredients(ingredients);
+
+                String cookingInstructions = suggestion.path("cookingInstructions").asText("No instructions provided");
+                Boolean isFastingFriendly = suggestion.path("isFastingFriendly").asBoolean(false);
+
+                RecipeSuggestionResponseDTO dto = new RecipeSuggestionResponseDTO(dishName, ingredients, cookingInstructions, isFastingFriendly);
 
                 result.add(dto);
             }
@@ -135,7 +136,7 @@ public class AIRecipeService {
                             ),
                             "generationConfig", Map.of(
                                     "temperature", 0.7,
-                                    "maxOutputTokens", 1000
+                                    "maxOutputTokens", 4000
                             )
                     ))
                     .retrieve()

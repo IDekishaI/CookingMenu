@@ -25,7 +25,7 @@ public class IngredientService {
     }
     @Transactional
     public void addIngredient(IngredientDTO dto){
-        if(ingredientRepo.findByName(dto.getName().trim()).isPresent()){
+        if(ingredientRepo.findByName(dto.name().trim()).isPresent()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ingredient name already exists.");
         }
         Ingredient ingredient = ingredientManager.toEntity(dto);
@@ -42,11 +42,11 @@ public class IngredientService {
     }
     @Transactional
     public void updateIngredient(IngredientDTO ingredientDTO){
-        String ingredientName = ingredientDTO.getName().trim();
+        String ingredientName = ingredientDTO.name().trim();
 
         Ingredient ingredient = ingredientRepo.findByName(ingredientName).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingredient with name " + ingredientName + " not found"));
 
-        ingredient.setFastingSuitable(ingredientDTO.getFastingSuitable());
+        ingredient.setFastingSuitable(ingredientDTO.fastingSuitable());
 
         ingredientRepo.save(ingredient);
     }

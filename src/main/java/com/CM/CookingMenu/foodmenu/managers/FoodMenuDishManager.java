@@ -23,7 +23,7 @@ public class FoodMenuDishManager {
             throw new IllegalArgumentException("FoodMenu cannot be null.");
 
         FoodMenuDish foodMenuDish = new FoodMenuDish();
-        Dish dish = dishRepo.findByName(dto.getDishName().trim()).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dish not found."));
+        Dish dish = dishRepo.findByName(dto.dishName().trim()).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dish not found."));
         foodMenuDish.setMenu(menu);
         foodMenuDish.setDish(dish);
         return foodMenuDish;
@@ -34,8 +34,7 @@ public class FoodMenuDishManager {
         if(foodMenuDish.getDish() == null)
             throw new IllegalArgumentException("Dish in FoodMenuDish cannot be null.");
 
-        FoodMenuDishDTO dto = new FoodMenuDishDTO();
-        dto.setDishName(foodMenuDish.getDish().getName());
+        FoodMenuDishDTO dto = new FoodMenuDishDTO(foodMenuDish.getDish().getName());
         return dto;
     }
     public List<FoodMenuDishDTO> toDtoList(List<FoodMenuDish> foodMenuDishes){

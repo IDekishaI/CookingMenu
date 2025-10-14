@@ -18,7 +18,6 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class DishIngredientManager {
-    private final DishRepository dishRepo;
     private final IngredientRepository ingredientRepo;
     public DishIngredientDTO toDto(DishIngredient dishIngredient){
         if(dishIngredient == null)
@@ -27,9 +26,7 @@ public class DishIngredientManager {
         if(dishIngredient.getIngredient() == null)
             throw new IllegalArgumentException("Ingredient in DishIngredient cannot be null.");
 
-        DishIngredientDTO dto = new DishIngredientDTO();
-        dto.setIngredientName(dishIngredient.getIngredient().getName());
-        dto.setQuantity(dishIngredient.getQuantity());
+        DishIngredientDTO dto = new DishIngredientDTO(dishIngredient.getIngredient().getName(), dishIngredient.getQuantity());
         return dto;
     }
     public List<DishIngredientDTO> toDtoList(List<DishIngredient> dishIngredients){
@@ -46,10 +43,10 @@ public class DishIngredientManager {
             throw new IllegalArgumentException("Dish cannot be null.");
 
         DishIngredient dishIngredient = new DishIngredient();
-        Ingredient ingredient = ingredientRepo.findByName(dto.getIngredientName().trim()).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ingredient not found."));
+        Ingredient ingredient = ingredientRepo.findByName(dto.ingredientName().trim()).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ingredient not found."));
         dishIngredient.setDish(dish);
         dishIngredient.setIngredient(ingredient);
-        dishIngredient.setQuantity(dto.getQuantity());
+        dishIngredient.setQuantity(dto.quantity());
         return dishIngredient;
     }
     public List<DishIngredient> toEntityList(List<DishIngredientDTO> dtos, Dish dish){

@@ -30,20 +30,20 @@ public class FoodMenuSuggestionService {
     private String buildPrompt(FoodMenuSuggestionRequestDTO request){
         StringBuilder prompt = new StringBuilder();
         prompt.append("Generate lunch menu plans for 5 days of the week starting on ");
-        prompt.append(request.getStartDate());
-        if(request.getPreferredIngredients() != null) {
+        prompt.append(request.startDate());
+        if(request.preferredIngredients() != null) {
             prompt.append(". Preferred ingredients are: ");
-            prompt.append(String.join(", ", request.getPreferredIngredients()));
+            prompt.append(String.join(", ", request.preferredIngredients()));
         }
-        if(request.getAvoidIngredients() != null) {
+        if(request.avoidIngredients() != null) {
             prompt.append(". Ingredients to avoid are: ");
-            prompt.append(String.join(", ", request.getAvoidIngredients()));
+            prompt.append(String.join(", ", request.avoidIngredients()));
         }
-        if(request.getBudgetContstraint() != null)
-            prompt.append(". Budget constraint is: ").append(request.getBudgetContstraint());
-        if(request.getNutritionalFocus() != null)
-            prompt.append(". Nutritional focus is: ").append(request.getNutritionalFocus());
-        if(request.getFastingFriendlyRequired() != null)
+        if(request.budgetContstraint() != null)
+            prompt.append(". Budget constraint is: ").append(request.budgetContstraint());
+        if(request.nutritionalFocus() != null)
+            prompt.append(". Nutritional focus is: ").append(request.nutritionalFocus());
+        if(request.fastingFriendlyRequired() != null)
             prompt.append(". Requirement: All menus must be fasting-friendly (no meat, dairy or eggs)");
 
         prompt.append("\nGenerate a response in this EXACT JSON format:\n");
@@ -113,8 +113,6 @@ public class FoodMenuSuggestionService {
             JsonNode menuJson = objectMapper.readTree(content);
             JsonNode weeklyMenu = menuJson.path("weeklyMenu");
 
-            FoodMenuSuggestionResponseDTO result = new FoodMenuSuggestionResponseDTO();
-
             List<DailyMenuSuggestion> dailyMenuSuggestions = new ArrayList<>();
 
             JsonNode dailyMenusNode = weeklyMenu.path("dailyMenus");
@@ -122,36 +120,37 @@ public class FoodMenuSuggestionService {
             for (int i = 0; i < 5; i++) {
                 JsonNode dailyMenu = dailyMenusNode.get(i);
 
-                DailyMenuSuggestion suggestion = new DailyMenuSuggestion();
-                suggestion.setDate(dailyMenu.path("date").asText());
-                suggestion.setIsFastingFriendly(dailyMenu.path("isFastingFriendly").asBoolean(false));
-                suggestion.setTheme(dailyMenu.path("theme").asText("Special Day"));
+                String date = dailyMenu.path("date").asText();
 
                 List<String> dishes = new ArrayList<>();
                 JsonNode dishesNode = dailyMenu.path("suggestedDishes");
                 if (dishesNode.isArray())
                     for (JsonNode dish : dishesNode)
                         dishes.add(dish.asText());
-                suggestion.setSuggestedDishes(dishes);
+
+                String theme = dailyMenu.path("theme").asText("Special Day");
+
+                Boolean fastingFriendly = dailyMenu.path("isFastingFriendly").asBoolean(false);
+
+                DailyMenuSuggestion suggestion = new DailyMenuSuggestion(date, dishes, theme, fastingFriendly);
+
                 dailyMenuSuggestions.add(suggestion);
             }
-            result.setDailyMenuSuggestionList(dailyMenuSuggestions);
 
 
             JsonNode nutritionNode = weeklyMenu.path("nutritionSummary");
-            WeeklyNutritionSummary weeklyNutritionSummary = new WeeklyNutritionSummary();
-            weeklyNutritionSummary.setAverageCaloriesPerDay(nutritionNode.path("averageCaloriesPerDay").asDouble(0));
-            weeklyNutritionSummary.setAverageCarbsPerDay(nutritionNode.path("averageCarbsPerDay").asDouble(0));
-            weeklyNutritionSummary.setAverageFatPerDay(nutritionNode.path("averageFatPerDay").asDouble(0));
-            weeklyNutritionSummary.setAverageProteinPerDay(nutritionNode.path("averageProteinPerDay").asDouble(0));
-            weeklyNutritionSummary.setBalanceRating(nutritionNode.path("balanceRating").asText("Good"));
-            result.setWeeklyNutritionSummary(weeklyNutritionSummary);
+            Double averageCalPD = nutritionNode.path("averageCaloriesPerDay").asDouble(0);
+            Double averageCbPD = nutritionNode.path("averageCarbsPerDay").asDouble(0);
+            Double averageFPD = nutritionNode.path("averageFatPerDay").asDouble(0);
+            Double averagePPD = nutritionNode.path("averageProteinPerDay").asDouble(0);
+            String balanceRating = nutritionNode.path("balanceRating").asText("Good");
 
+            WeeklyNutritionSummary weeklyNutritionSummary = new WeeklyNutritionSummary(averageCalPD, averageCbPD, averageFPD, averagePPD, balanceRating);
             Double costEstimatePerPerson = weeklyMenu.path("costEstimatePerPerson").asDouble();
-            result.setCostEstimatePerPerson(costEstimatePerPerson);
 
             String notes = weeklyMenu.path("notes").asText("AI-Generated Weekly Plan");
-            result.setNotes(notes);
+
+            FoodMenuSuggestionResponseDTO result = new FoodMenuSuggestionResponseDTO(dailyMenuSuggestions, weeklyNutritionSummary, costEstimatePerPerson, notes);
 
             return result;
         } catch (Exception e) {
@@ -185,7 +184,7 @@ public class FoodMenuSuggestionService {
                             ),
                             "generationConfig", Map.of(
                                     "temperature", 0.7,
-                                    "maxOutputTokens", 2000  // Increased for weekly menus
+                                    "maxOutputTokens", 8000  // Increased for weekly menus
                             )
                     ))
                     .retrieve()
