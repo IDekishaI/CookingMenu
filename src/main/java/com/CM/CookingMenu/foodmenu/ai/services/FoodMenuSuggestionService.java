@@ -44,7 +44,8 @@ public class FoodMenuSuggestionService {
         if(request.nutritionalFocus() != null)
             prompt.append(". Nutritional focus is: ").append(request.nutritionalFocus());
         if(request.fastingFriendlyRequired() != null)
-            prompt.append(". Requirement: All menus must be fasting-friendly (no meat, dairy or eggs)");
+            if(request.fastingFriendlyRequired())
+                prompt.append(". Requirement: All menus must be fasting-friendly (no meat, dairy or eggs)");
 
         prompt.append("\nGenerate a response in this EXACT JSON format:\n");
         prompt.append("{\n");

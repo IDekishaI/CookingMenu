@@ -54,6 +54,7 @@ public class FoodMenuService {
     @Transactional
     public void deleteFoodmenuByDate(LocalDate date){
         FoodMenu foodMenu = foodMenuRepo.findByFoodmenuDate(date).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find a foodmenu on the date " + date.toString()));
+        attendanceRepo.deleteByFoodmenuId(foodMenu.getFoodMenuId());
         foodMenuRepo.delete(foodMenu);
     }
 

@@ -3,7 +3,6 @@ package com.CM.CookingMenu.dish.managers;
 import com.CM.CookingMenu.dish.entities.Dish;
 import com.CM.CookingMenu.dish.entities.DishIngredient;
 import com.CM.CookingMenu.dish.dtos.DishIngredientDTO;
-import com.CM.CookingMenu.dish.repositories.DishRepository;
 import com.CM.CookingMenu.ingredient.entities.Ingredient;
 import com.CM.CookingMenu.ingredient.repositories.IngredientRepository;
 import lombok.RequiredArgsConstructor;

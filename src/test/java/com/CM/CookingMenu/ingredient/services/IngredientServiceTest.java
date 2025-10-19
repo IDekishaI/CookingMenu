@@ -67,10 +67,10 @@ public class IngredientServiceTest {
         List<IngredientDTO> result = ingredientService.getAllIngredients();
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getName()).isEqualTo("Tomato");
-        assertThat(result.get(0).getFastingSuitable()).isEqualTo(true);
-        assertThat(result.get(1).getName()).isEqualTo("Beef");
-        assertThat(result.get(1).getFastingSuitable()).isEqualTo(false);
+        assertThat(result.get(0).name()).isEqualTo("Tomato");
+        assertThat(result.get(0).fastingSuitable()).isEqualTo(true);
+        assertThat(result.get(1).name()).isEqualTo("Beef");
+        assertThat(result.get(1).fastingSuitable()).isEqualTo(false);
 
         verify(ingredientRepo).findAll();
         verify(ingredientManager).toDtoList(entities);

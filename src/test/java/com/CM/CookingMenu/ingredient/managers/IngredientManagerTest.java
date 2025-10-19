@@ -29,9 +29,7 @@ public class IngredientManagerTest {
         tomatoEntity.setName("Tomato");
         tomatoEntity.setFastingSuitable(true);
 
-        tomatoDTO = new IngredientDTO();
-        tomatoDTO.setName("Tomato");
-        tomatoDTO.setFastingSuitable(true);
+        tomatoDTO = new IngredientDTO("Tomato", true);
     }
     /*toEntity success |
     * toentity trim success |
@@ -69,8 +67,8 @@ public class IngredientManagerTest {
         IngredientDTO result = ingredientManager.toDto(tomatoEntity);
 
         assertThat(result).isNotNull();
-        assertThat(result.getName()).isEqualTo("Tomato");
-        assertThat(result.getFastingSuitable()).isEqualTo(true);
+        assertThat(result.name()).isEqualTo("Tomato");
+        assertThat(result.fastingSuitable()).isEqualTo(true);
     }
 
     @Test
@@ -97,10 +95,10 @@ public class IngredientManagerTest {
 
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getName()).isEqualTo("Tomato");
-        assertThat(result.get(0).getFastingSuitable()).isEqualTo(true);
-        assertThat(result.get(1).getName()).isEqualTo("Beef");
-        assertThat(result.get(1).getFastingSuitable()).isEqualTo(false);
+        assertThat(result.get(0).name()).isEqualTo("Tomato");
+        assertThat(result.get(0).fastingSuitable()).isEqualTo(true);
+        assertThat(result.get(1).name()).isEqualTo("Beef");
+        assertThat(result.get(1).fastingSuitable()).isEqualTo(false);
     }
 
     @Test
@@ -122,6 +120,6 @@ public class IngredientManagerTest {
 
         assertThat(result).isNotNull();
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getName()).isEqualTo("Tomato");
+        assertThat(result.get(0).name()).isEqualTo("Tomato");
     }
 }
