@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authentication", description = "User registration and login endpoints")
 public class AuthController {
     private final AuthService authService;
+
     @Operation(
             summary = "Register new user.",
             description = "Creates a new user account with the User role by default."
@@ -38,12 +39,12 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
-                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                        description = "User registration details",
-                                                        required = true,
-                                                        content = @Content(schema = @Schema(implementation = RegisterRequest.class))
-                                                )
-                                                @Valid @RequestBody RegisterRequest request){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "User registration details",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RegisterRequest.class))
+            )
+            @Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
@@ -61,12 +62,12 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-                                            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                    description = "Login credentials",
-                                                    required = true,
-                                                    content = @Content(schema = @Schema(implementation = LoginRequest.class))
-                                            )
-                                            @Valid @RequestBody LoginRequest request){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Login credentials",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = LoginRequest.class))
+            )
+            @Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 }

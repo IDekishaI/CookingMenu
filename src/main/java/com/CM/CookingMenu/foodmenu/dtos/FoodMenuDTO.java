@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Food menu containing dishes for a specific date")
+@Schema(description = "Data transfer object for food menu")
 public class FoodMenuDTO {
     @Schema(
             description = "Date of the food menu",

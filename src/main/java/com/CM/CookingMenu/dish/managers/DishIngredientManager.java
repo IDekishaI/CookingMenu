@@ -1,8 +1,8 @@
 package com.CM.CookingMenu.dish.managers;
 
+import com.CM.CookingMenu.dish.dtos.DishIngredientDTO;
 import com.CM.CookingMenu.dish.entities.Dish;
 import com.CM.CookingMenu.dish.entities.DishIngredient;
-import com.CM.CookingMenu.dish.dtos.DishIngredientDTO;
 import com.CM.CookingMenu.ingredient.entities.Ingredient;
 import com.CM.CookingMenu.ingredient.repositories.IngredientRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,38 +18,41 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class DishIngredientManager {
     private final IngredientRepository ingredientRepo;
-    public DishIngredientDTO toDto(DishIngredient dishIngredient){
-        if(dishIngredient == null)
+
+    public DishIngredientDTO toDto(DishIngredient dishIngredient) {
+        if (dishIngredient == null)
             throw new IllegalArgumentException("DishIngredient cannot be null.");
 
-        if(dishIngredient.getIngredient() == null)
+        if (dishIngredient.getIngredient() == null)
             throw new IllegalArgumentException("Ingredient in DishIngredient cannot be null.");
 
-        DishIngredientDTO dto = new DishIngredientDTO(dishIngredient.getIngredient().getName(), dishIngredient.getQuantity());
-        return dto;
+        return new DishIngredientDTO(dishIngredient.getIngredient().getName(), dishIngredient.getQuantity());
     }
-    public List<DishIngredientDTO> toDtoList(List<DishIngredient> dishIngredients){
-        if(dishIngredients == null)
+
+    public List<DishIngredientDTO> toDtoList(List<DishIngredient> dishIngredients) {
+        if (dishIngredients == null)
             return new ArrayList<>();
 
         return dishIngredients.stream()
-                            .filter(Objects::nonNull)
-                            .map(this::toDto)
-                            .toList();
+                .filter(Objects::nonNull)
+                .map(this::toDto)
+                .toList();
     }
-    public DishIngredient toEntity(DishIngredientDTO dto, Dish dish){
-        if(dish == null)
+
+    public DishIngredient toEntity(DishIngredientDTO dto, Dish dish) {
+        if (dish == null)
             throw new IllegalArgumentException("Dish cannot be null.");
 
         DishIngredient dishIngredient = new DishIngredient();
-        Ingredient ingredient = ingredientRepo.findByName(dto.ingredientName().trim()).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ingredient not found."));
+        Ingredient ingredient = ingredientRepo.findByName(dto.ingredientName().trim()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ingredient not found."));
         dishIngredient.setDish(dish);
         dishIngredient.setIngredient(ingredient);
         dishIngredient.setQuantity(dto.quantity());
         return dishIngredient;
     }
-    public List<DishIngredient> toEntityList(List<DishIngredientDTO> dtos, Dish dish){
-        if(dish == null)
+
+    public List<DishIngredient> toEntityList(List<DishIngredientDTO> dtos, Dish dish) {
+        if (dish == null)
             throw new IllegalArgumentException("Dish cannot be null.");
 
         return dtos.stream()

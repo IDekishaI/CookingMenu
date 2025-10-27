@@ -28,8 +28,8 @@ public class FoodMenu {
     private List<FoodMenuDish> dishes;
 
     @Transient
-    public boolean isFastingSuitable(){
-        if(dishes == null || dishes.isEmpty())
+    public boolean isFastingSuitable() {
+        if (dishes == null || dishes.isEmpty())
             return true;
         return dishes.stream()
                 .allMatch(foodMenuDish -> foodMenuDish.getDish() != null && foodMenuDish.getDish().isFastingSuitable());

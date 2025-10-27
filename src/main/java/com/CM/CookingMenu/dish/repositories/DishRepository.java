@@ -12,6 +12,8 @@ public interface DishRepository extends JpaRepository<Dish, Integer> {
             "LEFT JOIN FETCH d.dishIngredients di " +
             "LEFT JOIN FETCH di.ingredient i")
     List<Dish> findAllWithIngredients();
+
     boolean existsByName(String name);
+
     Optional<Dish> findByName(String name);
 }

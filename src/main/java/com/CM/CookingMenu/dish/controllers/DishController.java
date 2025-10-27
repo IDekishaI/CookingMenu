@@ -5,7 +5,6 @@ import com.CM.CookingMenu.dish.ai.dtos.RecipeSuggestionResponseDTO;
 import com.CM.CookingMenu.dish.ai.services.AIRecipeService;
 import com.CM.CookingMenu.dish.dtos.DishDTO;
 import com.CM.CookingMenu.dish.services.DishService;
-import com.CM.CookingMenu.ingredient.dtos.IngredientDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,7 +50,7 @@ public class DishController {
     })
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'COOK', 'ADMIN')")
-    public ResponseEntity<List<DishDTO>> getAllDishes(){
+    public ResponseEntity<List<DishDTO>> getAllDishes() {
         return ResponseEntity.ok(dishService.getAllDishes());
     }
 
@@ -68,12 +67,12 @@ public class DishController {
     @PostMapping
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> saveDish(
-                                            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                    description = "Dish to create",
-                                                    required = true,
-                                                    content = @Content(schema = @Schema(implementation = DishDTO.class))
-                                            )
-                                            @Valid @RequestBody DishDTO dto){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Dish to create",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = DishDTO.class))
+            )
+            @Valid @RequestBody DishDTO dto) {
         dishService.saveDish(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Dish Added.");
     }
@@ -92,14 +91,14 @@ public class DishController {
     @DeleteMapping("/delete/{name}")
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> deleteDish(@PathVariable
-                                                 @Parameter(
-                                                         description = "Name of dish to delete",
-                                                         example = "French Fries",
-                                                         required = true
-                                                 )
-                                                 @Pattern(regexp = "^[a-zA-Z_\\s]{2,100}$", message = "Invalid Dish name format")
-                                                 @NotBlank(message = "Dish name cannot be blank.")String name){
-        if(name == null || name.trim().isBlank())
+                                             @Parameter(
+                                                     description = "Name of dish to delete",
+                                                     example = "French Fries",
+                                                     required = true
+                                             )
+                                             @Pattern(regexp = "^[a-zA-Z_\\s]{2,100}$", message = "Invalid Dish name format")
+                                             @NotBlank(message = "Dish name cannot be blank.") String name) {
+        if (name == null || name.trim().isBlank())
             throw new IllegalArgumentException("Dish name cannot be null or blank.");
 
         dishService.deleteDishByName(name);
@@ -121,12 +120,12 @@ public class DishController {
     @PutMapping("/update")
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> updateDish(
-                                            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                    description = "Dish to update",
-                                                    required = true,
-                                                    content = @Content(schema = @Schema(implementation = DishDTO.class))
-                                            )
-                                            @Valid @RequestBody DishDTO dishDTO){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Dish to update",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = DishDTO.class))
+            )
+            @Valid @RequestBody DishDTO dishDTO) {
         dishService.updateDish(dishDTO);
         return ResponseEntity.ok("Dish updated successfully.");
     }
@@ -148,12 +147,12 @@ public class DishController {
     @PostMapping("/suggestions")
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<List<RecipeSuggestionResponseDTO>> getRecipeSuggestions(
-                                                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                                        description = "Recipe suggestion request",
-                                                                                        required = true,
-                                                                                        content = @Content(schema = @Schema(implementation = RecipeSuggestionRequestDTO.class))
-                                                                                )
-                                                                                @Valid @RequestBody RecipeSuggestionRequestDTO request){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Recipe suggestion request",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RecipeSuggestionRequestDTO.class))
+            )
+            @Valid @RequestBody RecipeSuggestionRequestDTO request) {
         List<RecipeSuggestionResponseDTO> suggestions = aiRecipeService.generateRecipeSuggestions(request);
         return ResponseEntity.ok(suggestions);
     }

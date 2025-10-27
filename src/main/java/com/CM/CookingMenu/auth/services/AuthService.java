@@ -23,18 +23,18 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthResponse register(RegisterRequest request){
-        if(userRepo.existsByUsername(request.getUsername()))
+    public AuthResponse register(RegisterRequest request) {
+        if (userRepo.existsByUsername(request.username()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists.");
-        if(userRepo.existsByEmail(request.getEmail()))
+        if (userRepo.existsByEmail(request.email()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists.");
 
         User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
+                .username(request.username())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .firstName(request.firstName())
+                .lastName(request.lastName())
                 .role(Role.USER)
                 .build();
 
@@ -42,25 +42,17 @@ public class AuthService {
 
         String token = jwtService.generateToken(user);
 
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setToken(token);
-        authResponse.setUsername(user.getUsername());
-        authResponse.setRole(user.getRole().name());
-
-        return authResponse;
+        return new AuthResponse(token, user.getUsername(), user.getRole().name(), 3600000L);
     }
-    public AuthResponse login(LoginRequest loginRequest){
+
+    public AuthResponse login(LoginRequest loginRequest) {
         authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
-        User user = userRepo.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.usernameOrEmail(), loginRequest.password()));
+        User user = userRepo.findByUsernameOrEmail(loginRequest.usernameOrEmail(), loginRequest.usernameOrEmail())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
         String token = jwtService.generateToken(user);
 
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setToken(token);
-        authResponse.setUsername(user.getUsername());
-        authResponse.setRole(user.getRole().name());
-        return authResponse;
+        return new AuthResponse(token, user.getUsername(), user.getRole().name(), 3600000L);
     }
 }

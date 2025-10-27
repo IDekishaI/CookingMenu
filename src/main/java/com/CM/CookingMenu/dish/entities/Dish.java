@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="dish")
+@Table(name = "dish")
 public class Dish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,13 +26,14 @@ public class Dish {
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<DishIngredient> dishIngredients;
+
     @Transient
-    public boolean isFastingSuitable(){
-        if(dishIngredients == null || dishIngredients.isEmpty())
+    public boolean isFastingSuitable() {
+        if (dishIngredients == null || dishIngredients.isEmpty())
             return true;
 
-        for(DishIngredient di : dishIngredients){
-            if(!di.getIngredient().isFastingSuitable())
+        for (DishIngredient di : dishIngredients) {
+            if (!di.getIngredient().isFastingSuitable())
                 return false;
         }
         return true;

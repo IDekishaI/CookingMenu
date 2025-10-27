@@ -24,15 +24,15 @@ public class AIRecipeService {
     private final WebClient.Builder webClientBuilder;
     private final ObjectMapper objectMapper;
 
-    private String buildPrompt(RecipeSuggestionRequestDTO request){
+    private String buildPrompt(RecipeSuggestionRequestDTO request) {
         StringBuilder prompt = new StringBuilder();
         prompt.append("Generate 3 recipe suggestions using these ingredients: ");
         prompt.append(String.join(", ", request.availableIngredients()));
-        if(request.mealType() != null)
+        if (request.mealType() != null)
             prompt.append(". Meal type: ").append(request.mealType());
-        if(request.targetGroup() != null)
+        if (request.targetGroup() != null)
             prompt.append(". Target group: ").append(request.targetGroup());
-        if(request.fastingFriendly() != null && request.fastingFriendly())
+        if (request.fastingFriendly() != null && request.fastingFriendly())
             prompt.append(". Must be fasting-friendly (no meat, dairy or eggs");
 
         prompt.append("\n\nRespond with JSON in this exact format: \n");
@@ -49,21 +49,23 @@ public class AIRecipeService {
 
         return prompt.toString();
     }
-    private String extractJsonFromText(String text){
+
+    private String extractJsonFromText(String text) {
         int jsonStart = text.indexOf('{');
         int jsonEnd = text.lastIndexOf('}');
 
-        if(jsonStart != -1 && jsonEnd != -1 && jsonEnd>jsonStart)
+        if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart)
             return text.substring(jsonStart, jsonEnd + 1);
 
         return text;
     }
-    private List<RecipeSuggestionResponseDTO> parseGeminiResponse(String response){
-        try{
+
+    private List<RecipeSuggestionResponseDTO> parseGeminiResponse(String response) {
+        try {
             JsonNode jsonResponse = objectMapper.readTree(response);
 
             JsonNode candidates = jsonResponse.path("candidates");
-            if(candidates.isEmpty())
+            if (candidates.isEmpty())
                 throw new RuntimeException("No response from Gemini API");
 
             String content = candidates.get(0)
@@ -73,7 +75,7 @@ public class AIRecipeService {
                     .path("text")
                     .asText();
 
-            if(content.isEmpty())
+            if (content.isEmpty())
                 throw new RuntimeException("Empty content in Gemini response");
 
             content = extractJsonFromText(content);
@@ -81,21 +83,21 @@ public class AIRecipeService {
             JsonNode suggestionsJson = objectMapper.readTree(content);
             JsonNode suggestions = suggestionsJson.path("suggestions");
 
-            if(!suggestions.isArray())
+            if (!suggestions.isArray())
                 throw new RuntimeException("Suggestions is not an array in response");
 
             List<RecipeSuggestionResponseDTO> result = new ArrayList<>();
 
-            for(JsonNode suggestion : suggestions){
+            for (JsonNode suggestion : suggestions) {
                 String dishName = suggestion.path("dishName").asText("Unknown Dish");
 
                 List<String> ingredients = new ArrayList<>();
                 JsonNode ingredientsNode = suggestion.path("requiredIngredients");
 
-                if(ingredientsNode.isArray()){
-                    for(JsonNode ingredient : ingredientsNode){
+                if (ingredientsNode.isArray()) {
+                    for (JsonNode ingredient : ingredientsNode) {
                         String ingredientName = ingredient.asText();
-                        if(!ingredientName.isEmpty())
+                        if (!ingredientName.isEmpty())
                             ingredients.add(ingredientName);
                     }
                 }
@@ -109,11 +111,12 @@ public class AIRecipeService {
             }
 
             return result;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Failed to parse Gemini AI response: " + e.getMessage());
         }
     }
-    public List<RecipeSuggestionResponseDTO> generateRecipeSuggestions(RecipeSuggestionRequestDTO request){
+
+    public List<RecipeSuggestionResponseDTO> generateRecipeSuggestions(RecipeSuggestionRequestDTO request) {
         if (geminiApiKey == null || geminiApiKey.isEmpty()) {
             throw new RuntimeException("Gemini API key not configured. Get one free at https://aistudio.google.com");
         }

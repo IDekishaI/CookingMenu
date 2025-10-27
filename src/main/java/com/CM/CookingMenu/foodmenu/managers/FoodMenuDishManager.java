@@ -2,9 +2,9 @@ package com.CM.CookingMenu.foodmenu.managers;
 
 import com.CM.CookingMenu.dish.entities.Dish;
 import com.CM.CookingMenu.dish.repositories.DishRepository;
+import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDishDTO;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenuDish;
-import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDishDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -18,39 +18,42 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class FoodMenuDishManager {
     private final DishRepository dishRepo;
-    public FoodMenuDish toEntity(FoodMenuDishDTO dto, FoodMenu menu){
-        if(menu == null)
+
+    public FoodMenuDish toEntity(FoodMenuDishDTO dto, FoodMenu menu) {
+        if (menu == null)
             throw new IllegalArgumentException("FoodMenu cannot be null.");
 
         FoodMenuDish foodMenuDish = new FoodMenuDish();
-        Dish dish = dishRepo.findByName(dto.dishName().trim()).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dish not found."));
+        Dish dish = dishRepo.findByName(dto.dishName().trim()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dish not found."));
         foodMenuDish.setMenu(menu);
         foodMenuDish.setDish(dish);
         return foodMenuDish;
     }
-    public FoodMenuDishDTO toDto(FoodMenuDish foodMenuDish){
-        if(foodMenuDish == null)
+
+    public FoodMenuDishDTO toDto(FoodMenuDish foodMenuDish) {
+        if (foodMenuDish == null)
             throw new IllegalArgumentException("FoodMenu Dish cannot be null.");
-        if(foodMenuDish.getDish() == null)
+        if (foodMenuDish.getDish() == null)
             throw new IllegalArgumentException("Dish in FoodMenuDish cannot be null.");
 
-        FoodMenuDishDTO dto = new FoodMenuDishDTO(foodMenuDish.getDish().getName());
-        return dto;
+        return new FoodMenuDishDTO(foodMenuDish.getDish().getName());
     }
-    public List<FoodMenuDishDTO> toDtoList(List<FoodMenuDish> foodMenuDishes){
-        if(foodMenuDishes == null)
+
+    public List<FoodMenuDishDTO> toDtoList(List<FoodMenuDish> foodMenuDishes) {
+        if (foodMenuDishes == null)
             return new ArrayList<>();
         return foodMenuDishes.stream()
-                        .filter(Objects::nonNull)
-                        .map(this::toDto)
-                        .toList();
+                .filter(Objects::nonNull)
+                .map(this::toDto)
+                .toList();
     }
-    public List<FoodMenuDish> toEntityList(List<FoodMenuDishDTO> dtoList, FoodMenu menu){
-        if(menu == null)
+
+    public List<FoodMenuDish> toEntityList(List<FoodMenuDishDTO> dtoList, FoodMenu menu) {
+        if (menu == null)
             throw new IllegalArgumentException("FoodMenu cannot be null.");
         return dtoList.stream()
-                    .filter(Objects::nonNull)
-                    .map(dto -> toEntity(dto, menu))
-                    .toList();
+                .filter(Objects::nonNull)
+                .map(dto -> toEntity(dto, menu))
+                .toList();
     }
 }

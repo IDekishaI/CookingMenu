@@ -13,13 +13,16 @@ public interface FoodMenuRepository extends JpaRepository<FoodMenu, Integer> {
     boolean existsByFoodmenuDate(LocalDate date);
 
     Optional<FoodMenu> findByFoodmenuDate(LocalDate date);
+
     @Query("Select DISTINCT fm FROM FoodMenu fm " +
             "WHERE fm.foodmenuDate > CURRENT_DATE")
     List<FoodMenu> findAllFutureMenus();
-    @Query("Select DISTINCT fm FROM FoodMenu fm "+
+
+    @Query("Select DISTINCT fm FROM FoodMenu fm " +
             "LEFT JOIN FETCH fm.dishes fmd " +
             "LEFT JOIN FETCH fmd.dish d")
     List<FoodMenu> findAllWithDishes();
+
     @Query("SELECT DISTINCT fm FROM FoodMenu fm " +
             "JOIN fm.dishes fmd " +
             "JOIN fmd.dish d " +

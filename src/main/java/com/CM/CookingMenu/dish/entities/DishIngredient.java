@@ -3,7 +3,10 @@ package com.CM.CookingMenu.dish.entities;
 import com.CM.CookingMenu.ingredient.entities.Ingredient;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

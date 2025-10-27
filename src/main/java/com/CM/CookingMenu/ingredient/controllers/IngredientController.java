@@ -21,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/ingredients")
@@ -45,7 +46,7 @@ public class IngredientController {
     })
     @GetMapping
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
-    public ResponseEntity<List<IngredientDTO>> getAllIngredients(){
+    public ResponseEntity<List<IngredientDTO>> getAllIngredients() {
         return ResponseEntity.ok(ingredientService.getAllIngredients());
     }
 
@@ -62,12 +63,12 @@ public class IngredientController {
     @PostMapping
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> addIngredient(
-                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                        description = "Ingredient to create",
-                                                        required = true,
-                                                        content = @Content(schema = @Schema(implementation = IngredientDTO.class))
-                                                )
-                                                @Valid @RequestBody IngredientDTO ingredientDTO){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Ingredient to create",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = IngredientDTO.class))
+            )
+            @Valid @RequestBody IngredientDTO ingredientDTO) {
         ingredientService.addIngredient(ingredientDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Ingredient Added.");
     }
@@ -96,8 +97,8 @@ public class IngredientController {
                                                            example = "Tomato",
                                                            required = true
                                                    )
-                                                   String name){
-        if(name == null || name.trim().isBlank())
+                                                   String name) {
+        if (name == null || name.trim().isBlank())
             throw new IllegalArgumentException("Ingredient name cannot be null or blank");
         ingredientService.deleteIngredientByName(name);
         return ResponseEntity.ok("Ingredient deleted successfully");
@@ -117,12 +118,12 @@ public class IngredientController {
     @PutMapping("/update")
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> updateIngredient(
-                                                    @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                            description = "Ingredient with updated properties",
-                                                            required = true,
-                                                            content = @Content(schema = @Schema(implementation = IngredientDTO.class))
-                                                    )
-                                                    @Valid @RequestBody IngredientDTO ingredientDTO){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Ingredient with updated properties",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = IngredientDTO.class))
+            )
+            @Valid @RequestBody IngredientDTO ingredientDTO) {
         ingredientService.updateIngredient(ingredientDTO);
         return ResponseEntity.ok("Ingredient updated successfully.");
     }

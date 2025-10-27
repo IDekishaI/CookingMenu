@@ -27,24 +27,24 @@ public class FoodMenuSuggestionService {
     private final WebClient.Builder webClientBuilder;
     private final ObjectMapper objectMapper;
 
-    private String buildPrompt(FoodMenuSuggestionRequestDTO request){
+    private String buildPrompt(FoodMenuSuggestionRequestDTO request) {
         StringBuilder prompt = new StringBuilder();
         prompt.append("Generate lunch menu plans for 5 days of the week starting on ");
         prompt.append(request.startDate());
-        if(request.preferredIngredients() != null) {
+        if (request.preferredIngredients() != null) {
             prompt.append(". Preferred ingredients are: ");
             prompt.append(String.join(", ", request.preferredIngredients()));
         }
-        if(request.avoidIngredients() != null) {
+        if (request.avoidIngredients() != null) {
             prompt.append(". Ingredients to avoid are: ");
             prompt.append(String.join(", ", request.avoidIngredients()));
         }
-        if(request.budgetContstraint() != null)
+        if (request.budgetContstraint() != null)
             prompt.append(". Budget constraint is: ").append(request.budgetContstraint());
-        if(request.nutritionalFocus() != null)
+        if (request.nutritionalFocus() != null)
             prompt.append(". Nutritional focus is: ").append(request.nutritionalFocus());
-        if(request.fastingFriendlyRequired() != null)
-            if(request.fastingFriendlyRequired())
+        if (request.fastingFriendlyRequired() != null)
+            if (request.fastingFriendlyRequired())
                 prompt.append(". Requirement: All menus must be fasting-friendly (no meat, dairy or eggs)");
 
         prompt.append("\nGenerate a response in this EXACT JSON format:\n");
@@ -82,15 +82,17 @@ public class FoodMenuSuggestionService {
 
         return prompt.toString();
     }
-    private String extractJsonFromText(String text){
+
+    private String extractJsonFromText(String text) {
         int jsonStart = text.indexOf('{');
         int jsonEnd = text.lastIndexOf('}');
 
-        if(jsonStart != -1 && jsonEnd != -1 && jsonEnd>jsonStart)
+        if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart)
             return text.substring(jsonStart, jsonEnd + 1);
 
         return text;
     }
+
     private FoodMenuSuggestionResponseDTO parseGeminiResponse(String response) {
         try {
             JsonNode jsonResponse = objectMapper.readTree(response);
@@ -151,14 +153,13 @@ public class FoodMenuSuggestionService {
 
             String notes = weeklyMenu.path("notes").asText("AI-Generated Weekly Plan");
 
-            FoodMenuSuggestionResponseDTO result = new FoodMenuSuggestionResponseDTO(dailyMenuSuggestions, weeklyNutritionSummary, costEstimatePerPerson, notes);
-
-            return result;
+            return new FoodMenuSuggestionResponseDTO(dailyMenuSuggestions, weeklyNutritionSummary, costEstimatePerPerson, notes);
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse Gemini AI response: " + e.getMessage());
         }
     }
-    public FoodMenuSuggestionResponseDTO generateFoodMenuSuggestion(FoodMenuSuggestionRequestDTO request){
+
+    public FoodMenuSuggestionResponseDTO generateFoodMenuSuggestion(FoodMenuSuggestionRequestDTO request) {
         if (geminiApiKey == null || geminiApiKey.isEmpty()) {
             throw new RuntimeException("Gemini API key not configured. Get one free at https://aistudio.google.com");
         }

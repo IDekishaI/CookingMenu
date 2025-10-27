@@ -46,7 +46,7 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
 
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
 

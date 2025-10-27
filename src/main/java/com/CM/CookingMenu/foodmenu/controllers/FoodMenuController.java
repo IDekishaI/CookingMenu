@@ -3,8 +3,8 @@ package com.CM.CookingMenu.foodmenu.controllers;
 import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionRequestDTO;
 import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionResponseDTO;
 import com.CM.CookingMenu.foodmenu.ai.services.FoodMenuSuggestionService;
-import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.dtos.AttendanceRequestDTO;
+import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.services.FoodMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,7 +53,7 @@ public class FoodMenuController {
     })
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'COOK', 'ADMIN')")
-    public ResponseEntity<List<FoodMenuDTO>> getAllFutureMenus(){
+    public ResponseEntity<List<FoodMenuDTO>> getAllFutureMenus() {
         return ResponseEntity.ok(foodMenuService.getAllFutureMenus());
     }
 
@@ -72,7 +72,7 @@ public class FoodMenuController {
     })
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
-    public ResponseEntity<List<FoodMenuDTO>> getAllFoodMenus(){
+    public ResponseEntity<List<FoodMenuDTO>> getAllFoodMenus() {
         return ResponseEntity.ok(foodMenuService.getAllFoodMenus());
     }
 
@@ -100,8 +100,8 @@ public class FoodMenuController {
                                                                            )
                                                                            @Pattern(regexp = "^[a-zA-Z\\s]{2,100}$", message = "Invalid dish name format")
                                                                            @NotBlank(message = "Dish name cannot be blank.")
-                                                                           String dishName){
-        if(dishName == null || dishName.trim().isBlank())
+                                                                           String dishName) {
+        if (dishName == null || dishName.trim().isBlank())
             throw new IllegalArgumentException("Dish name cannot be null or empty");
         return ResponseEntity.ok(foodMenuService.getAllFoodMenusContainingDish(dishName.trim()));
     }
@@ -119,12 +119,12 @@ public class FoodMenuController {
     @PostMapping
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> saveFoodmenu(
-                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                        description = "Food Menu to create",
-                                                        required = true,
-                                                        content = @Content(schema = @Schema(implementation = FoodMenuDTO.class))
-                                                )
-                                                @Valid @RequestBody FoodMenuDTO dto){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Food Menu to create",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = FoodMenuDTO.class))
+            )
+            @Valid @RequestBody FoodMenuDTO dto) {
         foodMenuService.saveFoodmenu(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Foodmenu added.");
     }
@@ -143,18 +143,17 @@ public class FoodMenuController {
     @DeleteMapping("/delete/{menuDate}")
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> deleteMenu(@PathVariable
-                                                @Parameter(
-                                                        description = "Menu Date to delete",
-                                                        required = true,
-                                                        example = "2025-10-25"
-                                                )
-                                                @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid date format. Use YYYY-MM-DD")
-                                                @NotBlank(message = "Date cannot be blank.")String menuDate){
+                                             @Parameter(
+                                                     description = "Menu Date to delete",
+                                                     required = true,
+                                                     example = "2025-10-25"
+                                             )
+                                             @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid date format. Use YYYY-MM-DD")
+                                             @NotBlank(message = "Date cannot be blank.") String menuDate) {
         LocalDate date;
-        try{
+        try {
             date = LocalDate.parse(menuDate);
-        }
-        catch (DateTimeParseException ex){
+        } catch (DateTimeParseException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format: " + menuDate);
         }
 
@@ -177,12 +176,12 @@ public class FoodMenuController {
     @PutMapping("/update")
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<String> updateFoodmenu(
-                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                        description = "Food Menu to update",
-                                                        required = true,
-                                                        content = @Content(schema = @Schema(implementation = FoodMenuDTO.class))
-                                                )
-                                                @RequestBody @Valid FoodMenuDTO foodmenuDTO){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Food Menu to update",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = FoodMenuDTO.class))
+            )
+            @RequestBody @Valid FoodMenuDTO foodmenuDTO) {
         foodMenuService.updateFoodmenu(foodmenuDTO);
         return ResponseEntity.ok("Successfully updated the foodmenu.");
     }
@@ -201,12 +200,12 @@ public class FoodMenuController {
     @PostMapping("/attend")
     @PreAuthorize("hasAnyRole('USER', 'COOK', 'ADMIN')")
     public ResponseEntity<String> attendMenu(
-                                            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                    description = "Food Menu to attend",
-                                                    required = true,
-                                                    content = @Content(schema = @Schema(implementation = AttendanceRequestDTO.class))
-                                            )
-                                            @Valid @RequestBody AttendanceRequestDTO dto){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Food Menu to attend",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = AttendanceRequestDTO.class))
+            )
+            @Valid @RequestBody AttendanceRequestDTO dto) {
         String message = foodMenuService.updateAttendance(dto);
         return ResponseEntity.ok(message);
     }
@@ -228,12 +227,12 @@ public class FoodMenuController {
     @PostMapping("/generate")
     @PreAuthorize("hasAnyRole('COOK', 'ADMIN')")
     public ResponseEntity<FoodMenuSuggestionResponseDTO> getFoodMenuSuggestions(
-                                                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                                        description = "Food Menu Suggestion Request",
-                                                                                        required = true,
-                                                                                        content = @Content(schema = @Schema(implementation = FoodMenuSuggestionRequestDTO.class))
-                                                                                )
-                                                                                @Valid @RequestBody FoodMenuSuggestionRequestDTO dto){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Food Menu Suggestion Request",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = FoodMenuSuggestionRequestDTO.class))
+            )
+            @Valid @RequestBody FoodMenuSuggestionRequestDTO dto) {
         FoodMenuSuggestionResponseDTO suggestions = foodMenuSuggestionService.generateFoodMenuSuggestion(dto);
         return ResponseEntity.ok(suggestions);
     }
