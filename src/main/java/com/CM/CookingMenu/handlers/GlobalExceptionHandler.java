@@ -1,5 +1,16 @@
 package com.CM.CookingMenu.handlers;
 
+import com.CM.CookingMenu.auth.exceptions.EmailAlreadyExistsException;
+import com.CM.CookingMenu.auth.exceptions.InvalidCredentialsException;
+import com.CM.CookingMenu.auth.exceptions.UsernameAlreadyExistsException;
+import com.CM.CookingMenu.dish.exceptions.DishAlreadyExistsException;
+import com.CM.CookingMenu.dish.exceptions.DishInUseException;
+import com.CM.CookingMenu.dish.exceptions.DishNotFoundException;
+import com.CM.CookingMenu.foodmenu.exceptions.FoodMenuAlreadyExistsException;
+import com.CM.CookingMenu.foodmenu.exceptions.FoodMenuNotFoundException;
+import com.CM.CookingMenu.ingredient.exceptions.IngredientAlreadyExistsException;
+import com.CM.CookingMenu.ingredient.exceptions.IngredientInUseException;
+import com.CM.CookingMenu.ingredient.exceptions.IngredientNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -108,6 +119,63 @@ public class GlobalExceptionHandler {
         response.put("timestamp", LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler({
+            IngredientNotFoundException.class,
+            DishNotFoundException.class,
+            FoodMenuNotFoundException.class
+    })
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(RuntimeException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", ex.getMessage());
+        response.put("timestamp", LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler({
+            IngredientAlreadyExistsException.class,
+            DishAlreadyExistsException.class,
+            FoodMenuAlreadyExistsException.class,
+            UsernameAlreadyExistsException.class,
+            EmailAlreadyExistsException.class
+    })
+    public ResponseEntity<Map<String, Object>> handleAlreadyExistsException(RuntimeException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", ex.getMessage());
+        response.put("timestamp", LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler({
+            IngredientInUseException.class,
+            DishInUseException.class
+    })
+    public ResponseEntity<Map<String, Object>> handleConflictException(RuntimeException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", ex.getMessage());
+        response.put("timestamp", LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler({
+            InvalidCredentialsException.class,
+            BadCredentialsException.class
+    })
+    public ResponseEntity<Map<String, Object>> handleAuthenticationException(Exception ex){
+        System.out.println("Authentication error: " + ex.getMessage());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", ex instanceof InvalidCredentialsException
+                ? ex.getMessage()
+                : "Invalid username or password");
+        response.put("timestamp", LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     @ExceptionHandler(Exception.class)

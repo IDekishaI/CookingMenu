@@ -1,14 +1,13 @@
 package com.CM.CookingMenu.foodmenu.managers;
 
 import com.CM.CookingMenu.dish.entities.Dish;
+import com.CM.CookingMenu.dish.exceptions.DishNotFoundException;
 import com.CM.CookingMenu.dish.repositories.DishRepository;
 import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDishDTO;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenuDish;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class FoodMenuDishManager {
             throw new IllegalArgumentException("FoodMenu cannot be null.");
 
         FoodMenuDish foodMenuDish = new FoodMenuDish();
-        Dish dish = dishRepo.findByName(dto.dishName().trim()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dish not found."));
+        Dish dish = dishRepo.findByName(dto.dishName().trim()).orElseThrow(() -> new DishNotFoundException(dto.dishName().trim()));
         foodMenuDish.setMenu(menu);
         foodMenuDish.setDish(dish);
         return foodMenuDish;

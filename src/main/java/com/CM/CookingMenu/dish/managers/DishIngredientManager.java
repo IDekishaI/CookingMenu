@@ -4,11 +4,10 @@ import com.CM.CookingMenu.dish.dtos.DishIngredientDTO;
 import com.CM.CookingMenu.dish.entities.Dish;
 import com.CM.CookingMenu.dish.entities.DishIngredient;
 import com.CM.CookingMenu.ingredient.entities.Ingredient;
+import com.CM.CookingMenu.ingredient.exceptions.IngredientNotFoundException;
 import com.CM.CookingMenu.ingredient.repositories.IngredientRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class DishIngredientManager {
             throw new IllegalArgumentException("Dish cannot be null.");
 
         DishIngredient dishIngredient = new DishIngredient();
-        Ingredient ingredient = ingredientRepo.findByName(dto.ingredientName().trim()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ingredient not found."));
+        Ingredient ingredient = ingredientRepo.findByName(dto.ingredientName().trim()).orElseThrow(() -> new IngredientNotFoundException(dto.ingredientName().trim()));
         dishIngredient.setDish(dish);
         dishIngredient.setIngredient(ingredient);
         dishIngredient.setQuantity(dto.quantity());

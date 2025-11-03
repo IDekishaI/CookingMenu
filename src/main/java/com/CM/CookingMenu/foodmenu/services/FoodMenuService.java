@@ -6,17 +6,17 @@ import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenuAttendance;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenuDish;
+import com.CM.CookingMenu.foodmenu.exceptions.FoodMenuAlreadyExistsException;
+import com.CM.CookingMenu.foodmenu.exceptions.FoodMenuNotFoundException;
 import com.CM.CookingMenu.foodmenu.managers.FoodMenuDishManager;
 import com.CM.CookingMenu.foodmenu.managers.FoodMenuManager;
 import com.CM.CookingMenu.foodmenu.repositories.FoodMenuAttendanceRepository;
 import com.CM.CookingMenu.foodmenu.repositories.FoodMenuRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -49,7 +49,7 @@ public class FoodMenuService {
     public void saveFoodmenu(FoodMenuDTO foodMenuDTO) {
 
         if (foodMenuRepo.existsByFoodmenuDate(foodMenuManager.stringToLocalDate(foodMenuDTO.getDate()))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Foodmenu Date already exists.");
+            throw new FoodMenuAlreadyExistsException(foodMenuDTO.getDate());
         }
         FoodMenu foodmenu = foodMenuManager.toEntity(foodMenuDTO);
         foodMenuRepo.save(foodmenu);
@@ -57,7 +57,7 @@ public class FoodMenuService {
 
     @Transactional
     public void deleteFoodmenuByDate(LocalDate date) {
-        FoodMenu foodMenu = foodMenuRepo.findByFoodmenuDate(date).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find a foodmenu on the date " + date.toString()));
+        FoodMenu foodMenu = foodMenuRepo.findByFoodmenuDate(date).orElseThrow(() -> new FoodMenuNotFoundException(date.toString()));
         attendanceRepo.deleteByFoodmenuId(foodMenu.getFoodMenuId());
         foodMenuRepo.delete(foodMenu);
     }
@@ -66,7 +66,7 @@ public class FoodMenuService {
     public void updateFoodmenu(FoodMenuDTO dto) {
         LocalDate date = foodMenuManager.stringToLocalDate(dto.getDate());
 
-        FoodMenu foodMenu = foodMenuRepo.findByFoodmenuDate(date).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Couldn't find a foodmenu on the date " + date.toString()));
+        FoodMenu foodMenu = foodMenuRepo.findByFoodmenuDate(date).orElseThrow(() -> new FoodMenuNotFoundException(date.toString()));
 
         foodMenu.getDishes().clear();
         List<FoodMenuDish> newFoodmenuDishes = foodMenuDishManager.toEntityList(dto.getFoodMenuDishDTOS(), foodMenu);
@@ -90,7 +90,7 @@ public class FoodMenuService {
     @Transactional
     public String updateAttendance(AttendanceRequestDTO dto) {
         User currentUser = getCurrentUser();
-        FoodMenu menu = foodMenuRepo.findByFoodmenuDate(dto.menuDate()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Menu not found for specific date"));
+        FoodMenu menu = foodMenuRepo.findByFoodmenuDate(dto.menuDate()).orElseThrow(() -> new FoodMenuNotFoundException(dto.menuDate().toString()));
         boolean isCurrentlyAttending = attendanceRepo.existsByFoodmenuIdAndUserId(menu.getFoodMenuId(), currentUser.getUserId());
         LocalDateTime timeNow = LocalDateTime.now();
         LocalDateTime menuDate = LocalDateTime.of(dto.menuDate(), LocalTime.MIN);

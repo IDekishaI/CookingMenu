@@ -5,14 +5,15 @@ import com.CM.CookingMenu.auth.dtos.LoginRequest;
 import com.CM.CookingMenu.auth.dtos.RegisterRequest;
 import com.CM.CookingMenu.auth.entities.Role;
 import com.CM.CookingMenu.auth.entities.User;
+import com.CM.CookingMenu.auth.exceptions.EmailAlreadyExistsException;
+import com.CM.CookingMenu.auth.exceptions.InvalidCredentialsException;
+import com.CM.CookingMenu.auth.exceptions.UsernameAlreadyExistsException;
 import com.CM.CookingMenu.auth.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -25,9 +26,9 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepo.existsByUsername(request.username()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists.");
+            throw new UsernameAlreadyExistsException();
         if (userRepo.existsByEmail(request.email()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists.");
+            throw new EmailAlreadyExistsException();
 
         User user = User.builder()
                 .username(request.username())
@@ -49,7 +50,7 @@ public class AuthService {
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.usernameOrEmail(), loginRequest.password()));
         User user = userRepo.findByUsernameOrEmail(loginRequest.usernameOrEmail(), loginRequest.usernameOrEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+                .orElseThrow(() -> new InvalidCredentialsException());
 
         String token = jwtService.generateToken(user);
 
