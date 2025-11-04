@@ -1,5 +1,6 @@
 package com.CM.CookingMenu.dish.ai.services;
 
+import com.CM.CookingMenu.common.utils.JsonUtils;
 import com.CM.CookingMenu.dish.ai.dtos.RecipeSuggestionRequestDTO;
 import com.CM.CookingMenu.dish.ai.dtos.RecipeSuggestionResponseDTO;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,16 +51,6 @@ public class AIRecipeService {
         return prompt.toString();
     }
 
-    private String extractJsonFromText(String text) {
-        int jsonStart = text.indexOf('{');
-        int jsonEnd = text.lastIndexOf('}');
-
-        if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart)
-            return text.substring(jsonStart, jsonEnd + 1);
-
-        return text;
-    }
-
     private List<RecipeSuggestionResponseDTO> parseGeminiResponse(String response) {
         try {
             JsonNode jsonResponse = objectMapper.readTree(response);
@@ -78,7 +69,7 @@ public class AIRecipeService {
             if (content.isEmpty())
                 throw new RuntimeException("Empty content in Gemini response");
 
-            content = extractJsonFromText(content);
+            content = JsonUtils.extractJsonFromText(content);
 
             JsonNode suggestionsJson = objectMapper.readTree(content);
             JsonNode suggestions = suggestionsJson.path("suggestions");

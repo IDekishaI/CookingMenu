@@ -1,5 +1,6 @@
 package com.CM.CookingMenu.foodmenu.ai.services;
 
+import com.CM.CookingMenu.common.utils.JsonUtils;
 import com.CM.CookingMenu.foodmenu.ai.dtos.DailyMenuSuggestion;
 import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionRequestDTO;
 import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionResponseDTO;
@@ -83,16 +84,6 @@ public class FoodMenuSuggestionService {
         return prompt.toString();
     }
 
-    private String extractJsonFromText(String text) {
-        int jsonStart = text.indexOf('{');
-        int jsonEnd = text.lastIndexOf('}');
-
-        if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart)
-            return text.substring(jsonStart, jsonEnd + 1);
-
-        return text;
-    }
-
     private FoodMenuSuggestionResponseDTO parseGeminiResponse(String response) {
         try {
             JsonNode jsonResponse = objectMapper.readTree(response);
@@ -111,7 +102,7 @@ public class FoodMenuSuggestionService {
             if (content.isEmpty())
                 throw new RuntimeException("Empty content in Gemini response");
 
-            content = extractJsonFromText(content);
+            content = JsonUtils.extractJsonFromText(content);
 
             JsonNode menuJson = objectMapper.readTree(content);
             JsonNode weeklyMenu = menuJson.path("weeklyMenu");

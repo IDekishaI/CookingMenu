@@ -1,5 +1,6 @@
 package com.CM.CookingMenu.foodmenu.controllers;
 
+import com.CM.CookingMenu.common.utils.DateUtils;
 import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionRequestDTO;
 import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionResponseDTO;
 import com.CM.CookingMenu.foodmenu.ai.services.FoodMenuSuggestionService;
@@ -23,10 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -150,12 +149,7 @@ public class FoodMenuController {
                                              )
                                              @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid date format. Use YYYY-MM-DD")
                                              @NotBlank(message = "Date cannot be blank.") String menuDate) {
-        LocalDate date;
-        try {
-            date = LocalDate.parse(menuDate);
-        } catch (DateTimeParseException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format: " + menuDate);
-        }
+        LocalDate date = DateUtils.parseStringToLocalDate(menuDate);
 
         foodMenuService.deleteFoodmenuByDate(date);
 

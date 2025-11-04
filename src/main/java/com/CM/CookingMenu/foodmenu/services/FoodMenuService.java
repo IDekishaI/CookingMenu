@@ -1,6 +1,8 @@
 package com.CM.CookingMenu.foodmenu.services;
 
 import com.CM.CookingMenu.auth.entities.User;
+import com.CM.CookingMenu.common.utils.DateUtils;
+import com.CM.CookingMenu.common.utils.SecurityUtils;
 import com.CM.CookingMenu.foodmenu.dtos.AttendanceRequestDTO;
 import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
@@ -13,8 +15,6 @@ import com.CM.CookingMenu.foodmenu.managers.FoodMenuManager;
 import com.CM.CookingMenu.foodmenu.repositories.FoodMenuAttendanceRepository;
 import com.CM.CookingMenu.foodmenu.repositories.FoodMenuRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,21 +34,21 @@ public class FoodMenuService {
     private final FoodMenuAttendanceRepository attendanceRepo;
 
     public List<FoodMenuDTO> getAllFoodMenus() {
-        return foodMenuManager.toDtoListWithAttendance(foodMenuRepo.findAllWithDishes(), getCurrentUser(), isCookOrAdmin());
+        return foodMenuManager.toDtoListWithAttendance(foodMenuRepo.findAllWithDishes(), SecurityUtils.getCurrentUser(), SecurityUtils.isCookOrAdmin());
     }
 
     public List<FoodMenuDTO> getAllFoodMenusContainingDish(String dishName) {
-        return foodMenuManager.toDtoListWithAttendance(foodMenuRepo.findByDishName(dishName), getCurrentUser(), isCookOrAdmin());
+        return foodMenuManager.toDtoListWithAttendance(foodMenuRepo.findByDishName(dishName), SecurityUtils.getCurrentUser(), SecurityUtils.isCookOrAdmin());
     }
 
     public List<FoodMenuDTO> getAllFutureMenus() {
-        return foodMenuManager.toDtoListWithAttendance(foodMenuRepo.findAllFutureMenus(), getCurrentUser(), isCookOrAdmin());
+        return foodMenuManager.toDtoListWithAttendance(foodMenuRepo.findAllFutureMenus(), SecurityUtils.getCurrentUser(), SecurityUtils.isCookOrAdmin());
     }
 
     @Transactional
     public void saveFoodmenu(FoodMenuDTO foodMenuDTO) {
 
-        if (foodMenuRepo.existsByFoodmenuDate(foodMenuManager.stringToLocalDate(foodMenuDTO.getDate()))) {
+        if (foodMenuRepo.existsByFoodmenuDate(DateUtils.parseStringToLocalDate(foodMenuDTO.getDate()))) {
             throw new FoodMenuAlreadyExistsException(foodMenuDTO.getDate());
         }
         FoodMenu foodmenu = foodMenuManager.toEntity(foodMenuDTO);
@@ -64,7 +64,7 @@ public class FoodMenuService {
 
     @Transactional
     public void updateFoodmenu(FoodMenuDTO dto) {
-        LocalDate date = foodMenuManager.stringToLocalDate(dto.getDate());
+        LocalDate date = DateUtils.parseStringToLocalDate(dto.getDate());
 
         FoodMenu foodMenu = foodMenuRepo.findByFoodmenuDate(date).orElseThrow(() -> new FoodMenuNotFoundException(date.toString()));
 
@@ -75,21 +75,9 @@ public class FoodMenuService {
         foodMenuRepo.save(foodMenu);
     }
 
-    private User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return (User) auth.getPrincipal();
-    }
-
-    private Boolean isCookOrAdmin() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_COOK") ||
-                authority.getAuthority().equals("ROLE_ADMIN")
-        );
-    }
-
     @Transactional
     public String updateAttendance(AttendanceRequestDTO dto) {
-        User currentUser = getCurrentUser();
+        User currentUser = SecurityUtils.getCurrentUser();
         FoodMenu menu = foodMenuRepo.findByFoodmenuDate(dto.menuDate()).orElseThrow(() -> new FoodMenuNotFoundException(dto.menuDate().toString()));
         boolean isCurrentlyAttending = attendanceRepo.existsByFoodmenuIdAndUserId(menu.getFoodMenuId(), currentUser.getUserId());
         LocalDateTime timeNow = LocalDateTime.now();

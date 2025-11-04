@@ -1,17 +1,15 @@
 package com.CM.CookingMenu.foodmenu.managers;
 
 import com.CM.CookingMenu.auth.entities.User;
+import com.CM.CookingMenu.common.utils.DateUtils;
 import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenu;
 import com.CM.CookingMenu.foodmenu.entities.FoodMenuDish;
 import com.CM.CookingMenu.foodmenu.repositories.FoodMenuAttendanceRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,18 +42,10 @@ public class FoodMenuManager {
         return dto;
     }
 
-    public LocalDate stringToLocalDate(String date) {
-        try {
-            return LocalDate.parse(date);
-        } catch (DateTimeParseException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format. Use YYYY-MM-DD");
-        }
-    }
-
     public FoodMenu toEntity(FoodMenuDTO dto) {
         FoodMenu foodMenu = new FoodMenu();
         List<FoodMenuDish> foodMenuDishes = foodMenuDishManager.toEntityList(dto.getFoodMenuDishDTOS(), foodMenu);
-        LocalDate toDate = stringToLocalDate(dto.getDate());
+        LocalDate toDate = DateUtils.parseStringToLocalDate(dto.getDate());
         foodMenu.setFoodmenuDate(toDate);
         foodMenu.setDishes(foodMenuDishes);
         return foodMenu;
