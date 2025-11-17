@@ -1,6 +1,6 @@
-package com.CM.CookingMenu.foodmenu.repositories;
+package com.CM.CookingMenu.foodmenu.attendance.repositories;
 
-import com.CM.CookingMenu.foodmenu.entities.FoodMenuAttendance;
+import com.CM.CookingMenu.foodmenu.attendance.entities.FoodMenuAttendance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

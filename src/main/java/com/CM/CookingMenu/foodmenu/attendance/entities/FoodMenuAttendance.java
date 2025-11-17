@@ -1,4 +1,4 @@
-package com.CM.CookingMenu.foodmenu.entities;
+package com.CM.CookingMenu.foodmenu.attendance.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

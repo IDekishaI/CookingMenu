@@ -4,7 +4,6 @@ import com.CM.CookingMenu.common.utils.DateUtils;
 import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionRequestDTO;
 import com.CM.CookingMenu.foodmenu.ai.dtos.FoodMenuSuggestionResponseDTO;
 import com.CM.CookingMenu.foodmenu.ai.services.FoodMenuSuggestionService;
-import com.CM.CookingMenu.foodmenu.dtos.AttendanceRequestDTO;
 import com.CM.CookingMenu.foodmenu.dtos.FoodMenuDTO;
 import com.CM.CookingMenu.foodmenu.services.FoodMenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -178,30 +177,6 @@ public class FoodMenuController {
             @RequestBody @Valid FoodMenuDTO foodmenuDTO) {
         foodMenuService.updateFoodmenu(foodmenuDTO);
         return ResponseEntity.ok("Successfully updated the foodmenu.");
-    }
-
-    @Operation(
-            summary = "Update attendance for a Food Menu",
-            description = "Update attendance for a Food Menu."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Updated attendance successfully."),
-            @ApiResponse(responseCode = "400", description = "Bad request - Invalid input"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing JWT token."),
-            @ApiResponse(responseCode = "403", description = "Forbidden - User does not have required role."),
-            @ApiResponse(responseCode = "404", description = "Not found - Food Menu date not found.")
-    })
-    @PostMapping("/attend")
-    @PreAuthorize("hasAnyRole('USER', 'COOK', 'ADMIN')")
-    public ResponseEntity<String> attendMenu(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Food Menu to attend",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = AttendanceRequestDTO.class))
-            )
-            @Valid @RequestBody AttendanceRequestDTO dto) {
-        String message = foodMenuService.updateAttendance(dto);
-        return ResponseEntity.ok(message);
     }
 
     @Operation(

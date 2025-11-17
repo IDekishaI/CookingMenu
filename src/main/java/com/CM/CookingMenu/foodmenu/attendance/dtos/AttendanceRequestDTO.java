@@ -1,4 +1,4 @@
-package com.CM.CookingMenu.foodmenu.dtos;
+package com.CM.CookingMenu.foodmenu.attendance.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
