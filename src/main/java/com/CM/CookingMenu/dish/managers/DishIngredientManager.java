@@ -5,7 +5,6 @@ import com.CM.CookingMenu.dish.entities.Dish;
 import com.CM.CookingMenu.dish.entities.DishIngredient;
 import com.CM.CookingMenu.ingredient.entities.Ingredient;
 import com.CM.CookingMenu.ingredient.exceptions.IngredientNotFoundException;
-import com.CM.CookingMenu.ingredient.repositories.IngredientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +15,6 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class DishIngredientManager {
-    private final IngredientRepository ingredientRepo;
-
     public DishIngredientDTO toDto(DishIngredient dishIngredient) {
         if (dishIngredient == null)
             throw new IllegalArgumentException("DishIngredient cannot be null.");
@@ -38,25 +35,32 @@ public class DishIngredientManager {
                 .toList();
     }
 
-    public DishIngredient toEntity(DishIngredientDTO dto, Dish dish) {
+    public DishIngredient toEntity(DishIngredientDTO dto, Dish dish, Ingredient ingredient) {
         if (dish == null)
             throw new IllegalArgumentException("Dish cannot be null.");
 
         DishIngredient dishIngredient = new DishIngredient();
-        Ingredient ingredient = ingredientRepo.findByName(dto.ingredientName().trim()).orElseThrow(() -> new IngredientNotFoundException(dto.ingredientName().trim()));
+        //Ingredient ingredient = ingredientRepo.findByName(dto.ingredientName().trim()).orElseThrow(() -> new IngredientNotFoundException(dto.ingredientName().trim()));
         dishIngredient.setDish(dish);
         dishIngredient.setIngredient(ingredient);
         dishIngredient.setQuantity(dto.quantity());
         return dishIngredient;
     }
 
-    public List<DishIngredient> toEntityList(List<DishIngredientDTO> dtos, Dish dish) {
+    public List<DishIngredient> toEntityList(List<DishIngredientDTO> dtos, Dish dish, List<Ingredient> ingredients) {
         if (dish == null)
             throw new IllegalArgumentException("Dish cannot be null.");
 
         return dtos.stream()
                 .filter(Objects::nonNull)
-                .map(dto -> toEntity(dto, dish))
+                .map(dto -> {
+                            Ingredient ingredient = ingredients.stream()
+                                    .filter(i -> i.getName().equalsIgnoreCase(dto.ingredientName().trim()))
+                                    .findFirst()
+                                    .orElseThrow(() -> new IngredientNotFoundException(dto.ingredientName()));
+                            return toEntity(dto, dish, ingredient);
+                        }
+                )
                 .toList();
     }
 }

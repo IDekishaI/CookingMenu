@@ -3,6 +3,7 @@ package com.CM.CookingMenu.dish.managers;
 import com.CM.CookingMenu.dish.dtos.DishDTO;
 import com.CM.CookingMenu.dish.entities.Dish;
 import com.CM.CookingMenu.dish.entities.DishIngredient;
+import com.CM.CookingMenu.ingredient.entities.Ingredient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -36,10 +37,10 @@ public class DishManager {
                 .toList();
     }
 
-    public Dish toEntity(DishDTO dto) {
+    public Dish toEntity(DishDTO dto, List<Ingredient> ingredients) {
         Dish dish = new Dish();
         dish.setName(dto.getName().trim());
-        List<DishIngredient> dishIngredients = dishIngredientManager.toEntityList(dto.getDishIngredientDTOS(), dish);
+        List<DishIngredient> dishIngredients = dishIngredientManager.toEntityList(dto.getDishIngredientDTOS(), dish, ingredients);
         dish.setDishIngredients(dishIngredients);
         return dish;
     }

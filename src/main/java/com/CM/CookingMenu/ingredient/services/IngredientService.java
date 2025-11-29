@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -54,5 +55,18 @@ public class IngredientService {
         ingredient.setFastingSuitable(ingredientDTO.fastingSuitable());
 
         ingredientRepo.save(ingredient);
+    }
+
+    public Ingredient findIngredientByName(String ingredientName){
+        return ingredientRepo.findByName(ingredientName.trim()).orElseThrow(() -> new IngredientNotFoundException(ingredientName));
+    }
+
+    public List<Ingredient> findIngredientsByNames(List<String> ingredientNames){
+        List<Ingredient> ingredients = new ArrayList<>();
+        for(String name : ingredientNames){
+            Ingredient ingredient = findIngredientByName(name);
+            ingredients.add(ingredient);
+        }
+        return ingredients;
     }
 }
